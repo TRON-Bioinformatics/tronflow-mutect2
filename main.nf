@@ -68,7 +68,7 @@ if (params.input_files) {
 process mutect2 {
     cpus 2
     memory '16g'
-    module 'java/11.0.1'
+    module 'java/11.18.09'
     tag "${name}"
 
     input:
@@ -101,7 +101,7 @@ process mutect2 {
 process learnReadOrientationModel {
   cpus 2
   memory '16g'
-  module 'java/11.0.1'
+  module 'java/11.18.09'
   tag "${name}"
 
   input:
@@ -123,7 +123,7 @@ process learnReadOrientationModel {
 process pileUpSummaries {
     cpus 2
     memory '16g'
-    module 'java/11.0.1'
+    module 'java/11.18.09'
     tag "${name}"
 
     input:
@@ -148,7 +148,7 @@ process pileUpSummaries {
 process calculateContamination {
     cpus 2
     memory '16g'
-    module 'java/11.0.1'
+    module 'java/11.18.09'
     tag "${name}"
 
     input:
@@ -171,7 +171,7 @@ process calculateContamination {
 process filterCalls {
     cpus 2
     memory '16g'
-    module 'java/11.0.1'
+    module 'java/11.18.09'
     tag "${name}"
     publishDir "${params.output}", mode: "copy"
 
