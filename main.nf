@@ -9,6 +9,8 @@ params.intervals = "/projects/data/gatk_bundle/hg19/hg19_refseq_exons.sorted.for
 params.gnomad = "/projects/data/gatk_bundle/hg19/gnomad.exomes.r2.1.1.sites.PASS.only_af.vcf.bgz"
 params.output = 'output'
 params.pon = false
+params.memory = "16g"
+params.cpus = 2
 
 def helpMessage() {
     log.info"""
@@ -30,6 +32,8 @@ Optional input:
     * gnomad: path to the gnomad VCF
     * NOTE: if any of the above parameters is not provided, default hg19 resources will be used
     * output: the folder where to publish output
+    * memory: the ammount of memory used by each job (default: 16g)
+    * cpus: the number of CPUs used by each job (default: 2)
 
 Output:
     * Output VCF
@@ -65,8 +69,8 @@ if (params.input_files) {
 }
 
 process mutect2 {
-    cpus 2
-    memory '16g'
+    cpus params.cpus
+    memory params.memory
     tag "${name}"
 
     input:
@@ -79,7 +83,7 @@ process mutect2 {
     script:
     	normal_panel_option = params.pon ? "--panel-of-normals ${params.pon}" : ""
 	"""
-    gatk --java-options '-Xmx16g' Mutect2 \
+    gatk --java-options '-Xmx${params.memory}' Mutect2 \
 	--reference ${params.reference} \
 	--intervals ${params.intervals} \
 	--germline-resource ${params.gnomad} \
@@ -94,8 +98,8 @@ process mutect2 {
 }
 
 process learnReadOrientationModel {
-  cpus 2
-  memory '16g'
+  cpus params.cpus
+  memory params.memory
   tag "${name}"
 
   input:
@@ -105,15 +109,15 @@ process learnReadOrientationModel {
     set name, file("${name}.read-orientation-model.tar.gz") into read_orientation_model
 
   """
-  gatk --java-options '-Xmx16g' LearnReadOrientationModel \
+  gatk --java-options '-Xmx${params.memory}' LearnReadOrientationModel \
   --input ${f1r2_stats} \
   --output ${name}.read-orientation-model.tar.gz
   """
 }
 
 process pileUpSummaries {
-    cpus 2
-    memory '16g'
+    cpus params.cpus
+    memory params.memory
     tag "${name}"
 
     input:
@@ -124,7 +128,7 @@ process pileUpSummaries {
 
     script:
 	"""
-    gatk --java-options '-Xmx16g' GetPileupSummaries  \
+    gatk --java-options '-Xmx${params.memory}' GetPileupSummaries  \
 	--intervals ${params.gnomad} \
 	--variant ${params.gnomad} \
 	--input ${tumor_bam} \
@@ -133,8 +137,8 @@ process pileUpSummaries {
 }
 
 process calculateContamination {
-    cpus 2
-    memory '16g'
+    cpus params.cpus
+    memory params.memory
     tag "${name}"
 
     input:
@@ -144,7 +148,7 @@ process calculateContamination {
       set name, file("${name}.segments.table"), file("${name}.calculatecontamination.table") into contaminationTables
 
     """
-    gatk --java-options '-Xmx16g' CalculateContamination \
+    gatk --java-options '-Xmx${params.memory}' CalculateContamination \
     --input ${table} \
     -tumor-segmentation ${name}.segments.table \
     --output ${name}.calculatecontamination.table
@@ -152,8 +156,8 @@ process calculateContamination {
 }
 
 process filterCalls {
-    cpus 2
-    memory '16g'
+    cpus params.cpus
+    memory params.memory
     tag "${name}"
     publishDir "${params.output}", mode: "copy"
 
@@ -165,7 +169,7 @@ process filterCalls {
       set name, file("${name}.vcf") into final_vcfs
 
     """
-    gatk --java-options '-Xmx16g' FilterMutectCalls \
+    gatk --java-options '-Xmx${params.memory}' FilterMutectCalls \
     -V ${unfiltered_vcf} \
     --reference ${params.reference} \
     --tumor-segmentation ${segments_table} \
