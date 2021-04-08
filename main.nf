@@ -15,7 +15,7 @@ params.cpus = 2
 def helpMessage() {
     log.info"""
 Usage:
-    mutect2.nf --input_files input_files [--reference reference.fasta]
+    nextflow run tron-bioinformatics/tronflow-mutect2 -profile conda --input_files input_files [--reference reference.fasta]
 
 This workflow is based on the implementation at /code/iCaM/scripts/mutect2_ID.sh
 
@@ -37,6 +37,7 @@ Optional input:
 
 Output:
     * Output VCF
+    * Other intermediate files
     """
 }
 
