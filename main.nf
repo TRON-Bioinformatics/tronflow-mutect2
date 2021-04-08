@@ -72,6 +72,7 @@ process mutect2 {
     cpus params.cpus
     memory params.memory
     tag "${name}"
+    publishDir "${params.output}", mode: "copy"
 
     input:
     	set name, file(tumor_bam), file(tumor_bai), file(normal_bam), file(normal_bai) from input_files
@@ -101,6 +102,7 @@ process learnReadOrientationModel {
   cpus params.cpus
   memory params.memory
   tag "${name}"
+  publishDir "${params.output}", mode: "copy"
 
   input:
     set name, file(f1r2_stats) from f1r2_stats
@@ -119,6 +121,7 @@ process pileUpSummaries {
     cpus params.cpus
     memory params.memory
     tag "${name}"
+    publishDir "${params.output}", mode: "copy"
 
     input:
     	set name, file(tumor_bam), file(tumor_bai) from tumor_bams
@@ -140,6 +143,7 @@ process calculateContamination {
     cpus params.cpus
     memory params.memory
     tag "${name}"
+    publishDir "${params.output}", mode: "copy"
 
     input:
       set name, file(table) from pileupsummaries
