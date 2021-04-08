@@ -1,6 +1,5 @@
 #!/usr/bin/env nextflow
 
-gatk4_jar = "/code/gatk/4.1.3.0/gatk-package-4.1.3.0-local.jar"
 
 params.help= false
 params.input_files = false
@@ -10,11 +9,13 @@ params.intervals = "/projects/data/gatk_bundle/hg19/hg19_refseq_exons.sorted.for
 params.gnomad = "/projects/data/gatk_bundle/hg19/gnomad.exomes.r2.1.1.sites.PASS.only_af.vcf.bgz"
 params.output = 'output'
 params.pon = false
+params.memory = "16g"
+params.cpus = 2
 
 def helpMessage() {
     log.info"""
 Usage:
-    mutect2.nf --input_files input_files [--reference reference.fasta]
+    nextflow run tron-bioinformatics/tronflow-mutect2 -profile conda --input_files input_files [--reference reference.fasta]
 
 This workflow is based on the implementation at /code/iCaM/scripts/mutect2_ID.sh
 
@@ -31,9 +32,12 @@ Optional input:
     * gnomad: path to the gnomad VCF
     * NOTE: if any of the above parameters is not provided, default hg19 resources will be used
     * output: the folder where to publish output
+    * memory: the ammount of memory used by each job (default: 16g)
+    * cpus: the number of CPUs used by each job (default: 2)
 
 Output:
     * Output VCF
+    * Other intermediate files
     """
 }
 
@@ -66,10 +70,10 @@ if (params.input_files) {
 }
 
 process mutect2 {
-    cpus 2
-    memory '16g'
-    module 'java/11.18.09'
+    cpus params.cpus
+    memory params.memory
     tag "${name}"
+    publishDir "${params.output}", mode: "copy"
 
     input:
     	set name, file(tumor_bam), file(tumor_bai), file(normal_bam), file(normal_bai) from input_files
@@ -81,10 +85,7 @@ process mutect2 {
     script:
     	normal_panel_option = params.pon ? "--panel-of-normals ${params.pon}" : ""
 	"""
-	mkdir -p `pwd`/scratch/tmp
-
-	java -Xmx16g -Djava.io.tmpdir=`pwd`/scratch/tmp -jar ${gatk4_jar} \
-  Mutect2 \
+    gatk --java-options '-Xmx${params.memory}' Mutect2 \
 	--reference ${params.reference} \
 	--intervals ${params.intervals} \
 	--germline-resource ${params.gnomad} \
@@ -99,10 +100,10 @@ process mutect2 {
 }
 
 process learnReadOrientationModel {
-  cpus 2
-  memory '16g'
-  module 'java/11.18.09'
+  cpus params.cpus
+  memory params.memory
   tag "${name}"
+  publishDir "${params.output}", mode: "copy"
 
   input:
     set name, file(f1r2_stats) from f1r2_stats
@@ -111,20 +112,17 @@ process learnReadOrientationModel {
     set name, file("${name}.read-orientation-model.tar.gz") into read_orientation_model
 
   """
-  mkdir -p `pwd`/scratch/tmp
-
-  java -Xmx16g -Djava.io.tmpdir=`pwd`/scratch/tmp -jar ${gatk4_jar} \
-  LearnReadOrientationModel \
+  gatk --java-options '-Xmx${params.memory}' LearnReadOrientationModel \
   --input ${f1r2_stats} \
   --output ${name}.read-orientation-model.tar.gz
   """
 }
 
 process pileUpSummaries {
-    cpus 2
-    memory '16g'
-    module 'java/11.18.09'
+    cpus params.cpus
+    memory params.memory
     tag "${name}"
+    publishDir "${params.output}", mode: "copy"
 
     input:
     	set name, file(tumor_bam), file(tumor_bai) from tumor_bams
@@ -134,10 +132,7 @@ process pileUpSummaries {
 
     script:
 	"""
-	mkdir -p `pwd`/scratch/tmp
-
-	java -Xmx16g -Djava.io.tmpdir=`pwd`/scratch/tmp -jar ${gatk4_jar} \
-  GetPileupSummaries  \
+    gatk --java-options '-Xmx${params.memory}' GetPileupSummaries  \
 	--intervals ${params.gnomad} \
 	--variant ${params.gnomad} \
 	--input ${tumor_bam} \
@@ -146,10 +141,10 @@ process pileUpSummaries {
 }
 
 process calculateContamination {
-    cpus 2
-    memory '16g'
-    module 'java/11.18.09'
+    cpus params.cpus
+    memory params.memory
     tag "${name}"
+    publishDir "${params.output}", mode: "copy"
 
     input:
       set name, file(table) from pileupsummaries
@@ -158,10 +153,7 @@ process calculateContamination {
       set name, file("${name}.segments.table"), file("${name}.calculatecontamination.table") into contaminationTables
 
     """
-    mkdir -p `pwd`/scratch/tmp
-
-    java -Xmx16g -Djava.io.tmpdir=`pwd`/scratch/tmp -jar ${gatk4_jar} \
-    CalculateContamination \
+    gatk --java-options '-Xmx${params.memory}' CalculateContamination \
     --input ${table} \
     -tumor-segmentation ${name}.segments.table \
     --output ${name}.calculatecontamination.table
@@ -169,9 +161,8 @@ process calculateContamination {
 }
 
 process filterCalls {
-    cpus 2
-    memory '16g'
-    module 'java/11.18.09'
+    cpus params.cpus
+    memory params.memory
     tag "${name}"
     publishDir "${params.output}", mode: "copy"
 
@@ -183,10 +174,7 @@ process filterCalls {
       set name, file("${name}.vcf") into final_vcfs
 
     """
-    mkdir -p `pwd`/scratch/tmp
-
-    java -Xmx16g -Djava.io.tmpdir=`pwd`/scratch/tmp -jar ${gatk4_jar} \
-    FilterMutectCalls \
+    gatk --java-options '-Xmx${params.memory}' FilterMutectCalls \
     -V ${unfiltered_vcf} \
     --reference ${params.reference} \
     --tumor-segmentation ${segments_table} \

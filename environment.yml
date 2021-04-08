@@ -1,0 +1,9 @@
+# You can use this file to create a conda environment for this pipeline:
+#   conda env create -f environment.yml
+name: tronflow-mutect2-0.2.0
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bioconda::gatk4=4.2.0.0

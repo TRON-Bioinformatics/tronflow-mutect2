@@ -1,0 +1,21 @@
+image: openjdk:11.0.10-jre-buster
+
+
+before_script:
+  - java -version
+  - apt-get update && apt-get --assume-yes install wget make procps
+  - wget -qO- https://get.nextflow.io | bash && cp nextflow /usr/local/bin/nextflow
+  - nextflow help
+  - wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+  - mkdir /root/.conda
+  - bash Miniconda3-latest-Linux-x86_64.sh -b && cp /root/miniconda3/bin/* /usr/local/bin/
+  - rm -f Miniconda3-latest-Linux-x86_64.sh
+  - conda --version
+
+stages:
+  - test
+
+test:
+  stage: test
+  script:
+    - make clean test

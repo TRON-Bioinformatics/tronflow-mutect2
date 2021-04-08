@@ -1,0 +1,12 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+work
+.nextflow.log
+report.html
+timeline.html
+trace.txt
+dag.dot
+.nextflow
+.idea
+output
