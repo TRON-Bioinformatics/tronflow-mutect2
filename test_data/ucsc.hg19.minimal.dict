@@ -1,0 +1,5 @@
+@HD	VN:1.6
+@SQ	SN:chr1	LN:1000000	M5:f6b4870ef0a68d56d0a063ec02e002dd	UR:file:/home/priesgo/src/tronflow-mutect2/test_data/ucsc.hg19.minimal.fasta
+@SQ	SN:chr2	LN:1000000	M5:733f916294fa3763451afe21fa840337	UR:file:/home/priesgo/src/tronflow-mutect2/test_data/ucsc.hg19.minimal.fasta
+@SQ	SN:chr3	LN:1000000	M5:6eade235671c9124cb0318fa90bab90d	UR:file:/home/priesgo/src/tronflow-mutect2/test_data/ucsc.hg19.minimal.fasta
+@SQ	SN:chr4	LN:1000000	M5:f99f74284026740843aa921e0ef4241f	UR:file:/home/priesgo/src/tronflow-mutect2/test_data/ucsc.hg19.minimal.fasta

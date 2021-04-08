@@ -1,6 +1,6 @@
-# tronflow-mutect2
+# TronFlow Mutect2
 
-A nextflow pipeline for Mutect2 best practices somatic variant calling of tumor-normal pairs.
+A nextflow pipeline implementing Mutect2 best practices somatic variant calling of tumor-normal pairs.
 
 ## Requirements and resources
 
@@ -8,7 +8,7 @@ Latest version is integrated with GATK and the latest release is 4.1. It require
 
 Data has similar requirements to GATK and to Mutect 1, such as having read groups set in the BAM. But, given that Mutect 2 is based on haplotype assembly the realignment around indels is not required in BAM preprocessing.
 
-### GnomAD
+### GnomAD (optional)
 
 GnomAD is the standard de facto database for germline variants population allele frequencies. Mutect2 employs GnomAD as prior knowledge to reject potential germline variants.
 
@@ -28,7 +28,7 @@ GnomAD file in b37 will be lifted over to hg19, which implies just changing the 
 java -jar /code/picard/2.21.2/picard.jar LiftoverVcf INPUT=/projects/data/gatk_bundle/b37/gnomad.exomes.r2.1.1.sites.PASS.only_af.vcf.bgz OUTPUT=/projects/data/gatk_bundle/hg19/gnomad.exomes.
 ```
 
-### Panel of normals (PON)
+### Panel of normals (PON) (optional)
 
 The PON is used to filter out germline-like variants from the somatic variant calls. The PON is recommended to be formed from technically similar samples (ie: same sequencing platform, same sample preparation), from healthy and young individuals and to be formed by a minimum of 40 samples (see https://gatkforums.broadinstitute.org/gatk/discussion/11053/panel-of-normals-pon ).
 
@@ -56,8 +56,7 @@ This is implemented in the pipeline mutect2_pon.vcf.
 
 ## Best practices
 
-This pipeline implements the best practices described here: https://software.broadinstitute.org/gatk/best-practices/workflow?id=11146 and https://software.broadinstitute.org/gatk/documentation/article?id=24057
-
+This pipeline implements the best practices described here: https://gatk.broadinstitute.org/hc/en-us/articles/360035894731-Somatic-short-variant-discovery-SNVs-Indels-
 ![Mutect2 best practices](mutect2_best_practices.png)
 
 
