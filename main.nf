@@ -1,5 +1,6 @@
 #!/usr/bin/env nextflow
 
+gatk4_jar = "/code/gatk/4.1.3.0/gatk-package-4.1.3.0-local.jar"
 
 params.help= false
 params.input_files = false
