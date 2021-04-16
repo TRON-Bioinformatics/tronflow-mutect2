@@ -29,6 +29,9 @@ Optional input:
     * output: the folder where to publish output
     * memory: the ammount of memory used by each job (default: 16g)
     * cpus: the number of CPUs used by each job (default: 2)
+    * disable_common_germline_filter: disable the use of GnomAD to filter out common variants in the population
+    from the somatic calls. The GnomAD resource is still required though as this common SNPs are used elsewhere to
+    calculate the contamination (default: false)
 
 Output:
     * Output VCF
@@ -52,7 +55,9 @@ All dependencies are set in a conda environment, thus no installation is require
 
 ### GnomAD
 
-GnomAD is the standard de facto database for germline variants population allele frequencies. Mutect2 employs GnomAD as prior knowledge to reject potential germline variants.
+GnomAD is the standard de facto database for germline variants population allele frequencies. Mutect2 employs GnomAD as prior knowledge to reject potential germline variants and it also uses the SNP to estimate contamination.
+
+If you want to disable the use of GnomAD to filter out common germline variants in the somatic calls use `--disable_common_germline_filter`, GnomAD will still be used to estimate the contamination.
 
 This resource has a total of 14,967,411 variants, of which 14,078,157 SNVs and 889,254 indels. No variants reported in mitochondrial chromosome. Frequencies are mostly low as expected, although there are some variants with a frequency of 1.0. Overall, we have 95,542 common SNVs (ie: AF > 5%), 96,599 low frequency SNVs (ie: AF<=5% and AF >= 0.5%) and 13,886,016 rare SNVs (AF < 0.5%) (of which 13,703,545 have AF < 0.1%); and 13,200 common indels, 12,444 low frequency indels and 863,610 rare indels.
 

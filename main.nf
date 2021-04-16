@@ -1,5 +1,6 @@
 #!/usr/bin/env nextflow
 
+gatk4_jar = "/code/gatk/4.1.3.0/gatk-package-4.1.3.0-local.jar"
 
 params.help= false
 params.input_files = false
@@ -11,6 +12,7 @@ params.output = 'output'
 params.pon = false
 params.memory = "16g"
 params.cpus = 2
+params.disable_common_germline_filter = false
 
 def helpMessage() {
     log.info"""
@@ -34,6 +36,9 @@ Optional input:
     * output: the folder where to publish output
     * memory: the ammount of memory used by each job (default: 16g)
     * cpus: the number of CPUs used by each job (default: 2)
+    * disable_common_germline_filter: disable the use of GnomAD to filter out common variants in the population
+    from the somatic calls. The GnomAD resource is still required though as this common SNPs are used elsewhere to
+    calculate the contamination (default: false)
 
 Output:
     * Output VCF
@@ -84,11 +89,12 @@ process mutect2 {
 
     script:
     	normal_panel_option = params.pon ? "--panel-of-normals ${params.pon}" : ""
+    	germline_filter = params.disable_common_germline_filter ? "" : "--germline-resource ${params.gnomad}"
 	"""
     gatk --java-options '-Xmx${params.memory}' Mutect2 \
 	--reference ${params.reference} \
 	--intervals ${params.intervals} \
-	--germline-resource ${params.gnomad} \
+	${germline_filter} \
 	${normal_panel_option} \
 	--input ${normal_bam} \
   --normal-sample normal \
