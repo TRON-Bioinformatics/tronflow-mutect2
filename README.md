@@ -2,7 +2,7 @@
 
 A nextflow pipeline implementing Mutect2 best practices somatic variant calling of tumor-normal pairs. See https://gatk.broadinstitute.org/hc/en-us/articles/360035894731-Somatic-short-variant-discovery-SNVs-Indels-
 
-![Mutect2 best practices](https://doc-00-2c-docs.googleusercontent.com/docs/securesc/lm1kf6o9ma1b8ob1s8ibpq39ndas7g4q/vm1h1q8h4tamjvb71q0ipntnoot0ckhd/1619410800000/01470915577943174129/05490019831986110599/1rDDE0v_F2YCeXfQnS00w0MY3cAGQvfho?authuser=0&nonce=5jhfpelejpsco&user=05490019831986110599&hash=nk1ito1saj6qmbrru42ep4ju84rsnerc)
+![Mutect2 best practices](https://drive.google.com/uc?id=1rDDE0v_F2YCeXfQnS00w0MY3cAGQvfho)
 
 
 ## How to run it
