@@ -1,8 +1,8 @@
 # TronFlow Mutect2
 
-A nextflow pipeline implementing Mutect2 best practices somatic variant calling of tumor-normal pairs. See https://gatk.broadinstitute.org/hc/en-us/articles/360035894731-Somatic-short-variant-discovery-SNVs-Indels-
+A nextflow (Di Tommaso, 2017) pipeline implementing the Mutect2 (Benjamin, 2019) best practices somatic variant calling of tumor-normal pairs.
 
-![Mutect2 best practices](mutect2_best_practices.png)
+![Mutect2 best practices](https://drive.google.com/uc?id=1rDDE0v_F2YCeXfQnS00w0MY3cAGQvfho)
 
 
 ## How to run it
@@ -55,7 +55,7 @@ All dependencies are set in a conda environment, thus no installation is require
 
 ### GnomAD
 
-GnomAD is the standard de facto database for germline variants population allele frequencies. Mutect2 employs GnomAD as prior knowledge to reject potential germline variants and it also uses the SNP to estimate contamination.
+GnomAD (Karczewski, 2020) is the standard de facto database for germline variants population allele frequencies. Mutect2 employs GnomAD as prior knowledge to reject potential germline variants and it also uses the SNP to estimate contamination.
 
 If you want to disable the use of GnomAD to filter out common germline variants in the somatic calls use `--disable_common_germline_filter`, GnomAD will still be used to estimate the contamination.
 
@@ -128,3 +128,10 @@ Optional input:
 Output:
     * Output combined VCF pon.vcf
 ```
+
+## References
+
+- Di Tommaso, P., Chatzou, M., Floden, E. W., Barja, P. P., Palumbo, E., & Notredame, C. (2017). Nextflow enables reproducible computational workflows. Nature Biotechnology, 35(4), 316–319. https://doi.org/10.1038/nbt.3820
+- Benjamin, D., Sato, T., Cibulskis, K., Getz, G., Stewart, C., & Lichtenstein, L. (2019). Calling Somatic SNVs and Indels with Mutect2. BioRxiv. https://doi.org/10.1101/861054
+- GATK team. Somatic short variant discovery (SNVs + Indels). Retrieved from https://gatk.broadinstitute.org/hc/en-us/articles/360035894731-Somatic-short-variant-discovery-SNVs-Indels-
+- Karczewski, K.J., Francioli, L.C., Tiao, G. et al. The mutational constraint spectrum quantified from variation in 141,456 humans. Nature 581, 434–443 (2020). https://doi.org/10.1038/s41586-020-2308-7
