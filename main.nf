@@ -15,35 +15,7 @@ params.cpus = 2
 params.disable_common_germline_filter = false
 
 def helpMessage() {
-    log.info"""
-Usage:
-    nextflow run tron-bioinformatics/tronflow-mutect2 -profile conda --input_files input_files [--reference reference.fasta]
-
-This workflow is based on the implementation at /code/iCaM/scripts/mutect2_ID.sh
-
-Input:
-    * input_files: the path to a tab-separated values file containing in each row the sample name, tumor bam and normal bam
-    The input file does not have header!
-    Example input file:
-    name1	tumor_bam1	normal_bam1
-    name2	tumor_bam2	normal_bam2
-
-Optional input:
-    * reference: path to the FASTA genome reference (indexes expected *.fai, *.dict)
-    * intervals: path to a BED file containing the regions to analyse
-    * gnomad: path to the gnomad VCF
-    * NOTE: if any of the above parameters is not provided, default hg19 resources will be used
-    * output: the folder where to publish output
-    * memory: the ammount of memory used by each job (default: 16g)
-    * cpus: the number of CPUs used by each job (default: 2)
-    * disable_common_germline_filter: disable the use of GnomAD to filter out common variants in the population
-    from the somatic calls. The GnomAD resource is still required though as this common SNPs are used elsewhere to
-    calculate the contamination (default: false)
-
-Output:
-    * Output VCF
-    * Other intermediate files
-    """
+    log.info params.help_message
 }
 
 if (params.help) {
@@ -56,19 +28,13 @@ if (params.input_files) {
   Channel
     .fromPath(params.input_files)
     .splitCsv(header: ['name', 'tumor_bam', 'normal_bam'], sep: "\t")
-    .map{ row->
-	    tuple(row.name,
-	    file(row.tumor_bam), file(row.tumor_bam + ".bai"),
-	    file(row.normal_bam), file(row.normal_bam + ".bai")
-	    ) }
+    .map{ row-> tuple(row.name, row.tumor_bam, row.normal_bam) }
     .set { input_files }
 
   Channel
       .fromPath(params.input_files)
       .splitCsv(header: ['name', 'tumor_bam', 'normal_bam'], sep: "\t")
-      .map{ row->
-  	    tuple(row.name,
-  	    file(row.tumor_bam), file(row.tumor_bam + ".bai")) }
+      .map{ row-> tuple(row.name, row.tumor_bam) }
       .set { tumor_bams }
 } else {
   exit 1, "Input file not specified!"
@@ -81,27 +47,27 @@ process mutect2 {
     publishDir "${params.output}", mode: "copy"
 
     input:
-    	set name, file(tumor_bam), file(tumor_bai), file(normal_bam), file(normal_bai) from input_files
+    	set name, tumor_bam, normal_bam from input_files
 
     output:
 	    set val("${name}"), file("${name}.unfiltered.vcf"), file("${name}.unfiltered.vcf.stats") into unfiltered_vcfs
-      set val("${name}"), file("${name}.f1r2.tar.gz") into f1r2_stats
+        set val("${name}"), file("${name}.f1r2.tar.gz") into f1r2_stats
 
     script:
     	normal_panel_option = params.pon ? "--panel-of-normals ${params.pon}" : ""
     	germline_filter = params.disable_common_germline_filter ? "" : "--germline-resource ${params.gnomad}"
+    	normal_inputs = normal_bam.split(",").collect({v -> "--input $v"}).join(" ")
+    	tumor_inputs = tumor_bam.split(",").collect({v -> "--input $v"}).join(" ")
 	"""
     gatk --java-options '-Xmx${params.memory}' Mutect2 \
 	--reference ${params.reference} \
 	--intervals ${params.intervals} \
 	${germline_filter} \
 	${normal_panel_option} \
-	--input ${normal_bam} \
-  --normal-sample normal \
-  --input ${tumor_bam} \
-  --tumor-sample tumor \
+	${normal_inputs} --normal-sample normal \
+    ${tumor_inputs} --tumor-sample tumor \
 	--output ${name}.unfiltered.vcf \
-  --f1r2-tar-gz ${name}.f1r2.tar.gz
+    --f1r2-tar-gz ${name}.f1r2.tar.gz
 	"""
 }
 
@@ -131,17 +97,18 @@ process pileUpSummaries {
     publishDir "${params.output}", mode: "copy"
 
     input:
-    	set name, file(tumor_bam), file(tumor_bai) from tumor_bams
+    	set name, tumor_bam from tumor_bams
 
     output:
 	   set val("${name}"), file("${name}.pileupsummaries.table") into pileupsummaries
 
     script:
+    tumor_inputs = tumor_bam.split(",").collect({v -> "--input $v"}).join(" ")
 	"""
     gatk --java-options '-Xmx${params.memory}' GetPileupSummaries  \
 	--intervals ${params.gnomad} \
 	--variant ${params.gnomad} \
-	--input ${tumor_bam} \
+	${tumor_inputs} \
 	--output ${name}.pileupsummaries.table
 	"""
 }
