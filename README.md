@@ -10,7 +10,7 @@ A nextflow (Di Tommaso, 2017) pipeline implementing the Mutect2 (Benjamin, 2019)
 ```
 $ nextflow run tron-bioinformatics/tronflow-mutect2 -profile conda --help
 Usage:
-    nextflow main.nf --input_files input_files
+    nextflow run tron-bioinformatics/tronflow-mutect2 -profile conda --input_files input_files [--reference reference.fasta]
 
 This workflow is based on the implementation at /code/iCaM/scripts/mutect2_ID.sh
 
