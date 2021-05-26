@@ -9,6 +9,7 @@ A nextflow (Di Tommaso, 2017) pipeline implementing the Mutect2 (Benjamin, 2019)
 
 ```
 $ nextflow run tron-bioinformatics/tronflow-mutect2 -profile conda --help
+
 Usage:
     nextflow run tron-bioinformatics/tronflow-mutect2 -profile conda --input_files input_files [--reference reference.fasta]
 
@@ -20,12 +21,11 @@ Input:
     Example input file:
     name1	tumor_bam1	normal_bam1
     name2	tumor_bam2	normal_bam2
-
-Optional input:
     * reference: path to the FASTA genome reference (indexes expected *.fai, *.dict)
     * intervals: path to a BED file containing the regions to analyse
     * gnomad: path to the gnomad VCF
-    * NOTE: if any of the above parameters is not provided, default hg19 resources will be used
+    
+Optional input:
     * output: the folder where to publish output
     * memory: the ammount of memory used by each job (default: 16g)
     * cpus: the number of CPUs used by each job (default: 2)
@@ -48,7 +48,7 @@ All dependencies are set in a conda environment, thus no installation is require
 ## Resources and data requirements
 
 - FASTA reference genome with fai and dict indexes (see https://gatk.broadinstitute.org/hc/en-us/articles/360035531652-FASTA-Reference-genome-format for instructions on building the indices)
-- Analysis intervals file in BED format. These intervals determine the regions where varianst will be called
+- Analysis intervals file in BED format. These intervals determine the regions where variants will be called
 - VCF file with common germline variants (see [GnomAD](#gnomad))
 - Input BAM files require that read groups are added to them, furthermore tumor and normal must have different read groups (see [Adding read groups to BAM files](#adding-read-groups-to-bam-files)).
 - Optionally, a panel of normals (PON) may be used (see [PON](#pon))
