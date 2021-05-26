@@ -2,7 +2,7 @@
 /shelf/
 /workspace.xml
 work
-.nextflow.log
+.nextflow.log*
 report.html
 timeline.html
 trace.txt
