@@ -44,13 +44,13 @@ process mutect2 {
     cpus params.cpus
     memory params.memory
     tag "${name}"
-    publishDir "${params.output}", mode: "copy"
+    publishDir "${params.output}/${name}", mode: "copy"
 
     input:
     	set name, tumor_bam, normal_bam from input_files
 
     output:
-	    set val("${name}"), file("${name}.unfiltered.vcf"), file("${name}.unfiltered.vcf.stats") into unfiltered_vcfs
+	    set val("${name}"), file("${name}.mutect2.unfiltered.vcf"), file("${name}.mutect2.unfiltered.vcf.stats") into unfiltered_vcfs
         set val("${name}"), file("${name}.f1r2.tar.gz") into f1r2_stats
 
     script:
@@ -66,7 +66,7 @@ process mutect2 {
 	${normal_panel_option} \
 	${normal_inputs} --normal-sample normal \
     ${tumor_inputs} --tumor-sample tumor \
-	--output ${name}.unfiltered.vcf \
+	--output ${name}.mutect2.unfiltered.vcf \
     --f1r2-tar-gz ${name}.f1r2.tar.gz
 	"""
 }
@@ -75,7 +75,7 @@ process learnReadOrientationModel {
   cpus params.cpus
   memory params.memory
   tag "${name}"
-  publishDir "${params.output}", mode: "copy"
+  publishDir "${params.output}/${name}", mode: "copy"
 
   input:
     set name, file(f1r2_stats) from f1r2_stats
@@ -94,7 +94,7 @@ process pileUpSummaries {
     cpus params.cpus
     memory params.memory
     tag "${name}"
-    publishDir "${params.output}", mode: "copy"
+    publishDir "${params.output}/${name}", mode: "copy"
 
     input:
     	set name, tumor_bam from tumor_bams
@@ -117,7 +117,7 @@ process calculateContamination {
     cpus params.cpus
     memory params.memory
     tag "${name}"
-    publishDir "${params.output}", mode: "copy"
+    publishDir "${params.output}/${name}", mode: "copy"
 
     input:
       set name, file(table) from pileupsummaries
@@ -137,14 +137,15 @@ process filterCalls {
     cpus params.cpus
     memory params.memory
     tag "${name}"
-    publishDir "${params.output}", mode: "copy"
+    publishDir "${params.output}/${name}", mode: "copy"
 
     input:
       set name, file(segments_table), file(contamination_table), file(model),
       file(unfiltered_vcf), file(vcf_stats) from contaminationTables.join(read_orientation_model).join(unfiltered_vcfs)
 
     output:
-      set name, file("${name}.vcf") into final_vcfs
+      set name, val("${params.output}/${name}/${name}.mutect2.vcf") into final_vcfs
+      file "${name}.mutect2.vcf"
 
     """
     gatk --java-options '-Xmx${params.memory}' FilterMutectCalls \
@@ -153,7 +154,7 @@ process filterCalls {
     --tumor-segmentation ${segments_table} \
     --contamination-table ${contamination_table} \
     --ob-priors ${model} \
-    --output ${name}.vcf
+    --output ${name}.mutect2.vcf
     """
 }
 
