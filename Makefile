@@ -13,8 +13,10 @@ clean:
 
 
 test:
-	nextflow main.nf -profile test,conda --output output/test1
-	nextflow main.nf -profile test,conda --disable_common_germline_filter --output output/test2
+	echo "sample_name\t"`pwd`"/test_data/TESTX_S1_L001.bam\t"`pwd`"/test_data/TESTX_S1_L002.bam" > test_data/test_input.txt
+	nextflow main.nf -profile test,conda --output output/test1 --input_files test_data/test_input.txt
+	nextflow main.nf -profile test,conda --disable_common_germline_filter --output output/test2 --input_files test_data/test_input.txt
+	echo "sample_name_with_replicates\t"`pwd`"/test_data/TESTX_S1_L001.bam,"`pwd`"/test_data/TESTX_S1_L001.bam\t"`pwd`"/test_data/TESTX_S1_L002.bam,"`pwd`"/test_data/TESTX_S1_L002.bam" > test_data/test_input_with_replicates.txt
 	nextflow main.nf -profile test,conda --input_files test_data/test_input_with_replicates.txt --output output/test3
 
 

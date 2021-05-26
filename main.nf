@@ -1,13 +1,11 @@
 #!/usr/bin/env nextflow
 
-gatk4_jar = "/code/gatk/4.1.3.0/gatk-package-4.1.3.0-local.jar"
 
 params.help= false
 params.input_files = false
-params.reference = "/projects/data/gatk_bundle/hg19/ucsc.hg19.fasta"
-// this BED does not have those contigs that were removed from the reference when aligning
-params.intervals = "/projects/data/gatk_bundle/hg19/hg19_refseq_exons.sorted.for_strelka.bed.gz"
-params.gnomad = "/projects/data/gatk_bundle/hg19/gnomad.exomes.r2.1.1.sites.PASS.only_af.vcf.bgz"
+params.reference = false
+params.intervals = false
+params.gnomad = false
 params.output = 'output'
 params.pon = false
 params.memory = "16g"
@@ -21,6 +19,18 @@ def helpMessage() {
 if (params.help) {
     helpMessage()
     exit 0
+}
+if (!params.reference) {
+    log.error "--reference is required"
+    exit 1
+}
+if (!params.intervals) {
+    log.error "--intervals is required"
+    exit 1
+}
+if (!params.gnomad) {
+    log.error "--gnomad is required"
+    exit 1
 }
 
 // checks required inputs
