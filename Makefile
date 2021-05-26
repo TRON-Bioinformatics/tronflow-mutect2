@@ -10,6 +10,6 @@ clean:
 
 
 test:
-	#nextflow main.nf -profile test,conda
-	#nextflow main.nf -profile test,conda --disable_common_germline_filter
+	nextflow main.nf -profile test,conda
+	nextflow main.nf -profile test,conda --disable_common_germline_filter
 	nextflow main.nf -profile test,conda --input_files test_data/test_input_with_replicates.txt

@@ -1,1 +1,0 @@
-test	/home/priesgo/src/tronflow-mutect2/test_data/TESTX_H7YRLADXX_S1_L001.readgroups.bam	/home/priesgo/src/tronflow-mutect2/test_data/TESTX_H7YRLADXX_S1_L002.readgroups.bam
