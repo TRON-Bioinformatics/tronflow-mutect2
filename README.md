@@ -1,5 +1,7 @@
 # TronFlow Mutect2
 
+[![DOI](https://zenodo.org/badge/355860788.svg)](https://zenodo.org/badge/latestdoi/355860788)
+
 A nextflow (Di Tommaso, 2017) pipeline implementing the Mutect2 (Benjamin, 2019) best practices somatic variant calling of tumor-normal pairs.
 
 ![Mutect2 best practices](https://drive.google.com/uc?id=1rDDE0v_F2YCeXfQnS00w0MY3cAGQvfho)
