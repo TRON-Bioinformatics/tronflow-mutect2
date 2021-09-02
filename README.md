@@ -1,6 +1,9 @@
 # TronFlow Mutect2
 
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/release/tron-bioinformatics/tronflow-mutect2?sort=semver)
 [![DOI](https://zenodo.org/badge/355860788.svg)](https://zenodo.org/badge/latestdoi/355860788)
+[![License](https://img.shields.io/badge/license-MIT-green)](https://opensource.org/licenses/MIT)
+[![Powered by Nextflow](https://img.shields.io/badge/powered%20by-Nextflow-orange.svg?style=flat&colorA=E1523D&colorB=007D8A)](https://www.nextflow.io/)
 
 A nextflow (Di Tommaso, 2017) pipeline implementing the Mutect2 (Benjamin, 2019) best practices somatic variant calling of tumor-normal pairs.
 
@@ -82,7 +85,7 @@ java -jar /code/picard/2.21.2/picard.jar LiftoverVcf INPUT=/projects/data/gatk_b
 Use Picard's AddOrReplaceReadGroups tool (see https://gatk.broadinstitute.org/hc/en-us/articles/360037226472-AddOrReplaceReadGroups-Picard-).
 You will need to set a different sample name for tumor and normal (parameter `-SM`), you can just use `tumor` and `normal` in absence of a better naming.
 
-### PON
+### Panel Of Normals (PON)
 
 The PON is used to filter out technical artifacts from the somatic variant calls. The PON is recommended to be formed from technically similar samples (ie: same sequencing platform, same sample preparation), from healthy and young individuals and to be formed by a minimum of 40 samples (see https://gatkforums.broadinstitute.org/gatk/discussion/11053/panel-of-normals-pon ).
 
