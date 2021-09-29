@@ -74,7 +74,7 @@ process mutect2 {
     	tumor_inputs = tumor_bam.split(",").collect({v -> "--input $v"}).join(" ")
     	intervals_option = params.intervals ? "--intervals ${params.intervals}" : ""
 	"""
-    gatk --java-options '-Xmx${params.memory}' Mutect2 \
+    gatk --java-options '-Xmx${params.memory_mutect2}' Mutect2 \
 	--reference ${params.reference} \
 	${intervals_option} \
 	${germline_filter} \
@@ -99,7 +99,7 @@ process learnReadOrientationModel {
     set name, file("${name}.read-orientation-model.tar.gz") into read_orientation_model
 
   """
-  gatk --java-options '-Xmx${params.memory}' LearnReadOrientationModel \
+  gatk --java-options '-Xmx${params.memory_read_orientation}' LearnReadOrientationModel \
   --input ${f1r2_stats} \
   --output ${name}.read-orientation-model.tar.gz
   """
@@ -121,7 +121,7 @@ process pileUpSummaries {
     tumor_inputs = tumor_bam.split(",").collect({v -> "--input $v"}).join(" ")
     intervals_option = params.intervals ? "--intervals ${params.intervals}" : ""
 	"""
-    gatk --java-options '-Xmx${params.memory}' GetPileupSummaries  \
+    gatk --java-options '-Xmx${params.memory_pileup}' GetPileupSummaries  \
 	${intervals_option} \
 	--variant ${params.gnomad} \
 	${tumor_inputs} \
@@ -142,7 +142,7 @@ process calculateContamination {
       set name, file("${name}.segments.table"), file("${name}.calculatecontamination.table") into contaminationTables
 
     """
-    gatk --java-options '-Xmx${params.memory}' CalculateContamination \
+    gatk --java-options '-Xmx${params.memory_contamination}' CalculateContamination \
     --input ${table} \
     -tumor-segmentation ${name}.segments.table \
     --output ${name}.calculatecontamination.table
@@ -164,7 +164,7 @@ process filterCalls {
       file "${name}.mutect2.vcf"
 
     """
-    gatk --java-options '-Xmx${params.memory}' FilterMutectCalls \
+    gatk --java-options '-Xmx${params.memory_filter}' FilterMutectCalls \
     -V ${unfiltered_vcf} \
     --reference ${params.reference} \
     --tumor-segmentation ${segments_table} \
