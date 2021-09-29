@@ -1,6 +1,7 @@
 # TronFlow Mutect2
 
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/release/tron-bioinformatics/tronflow-mutect2?sort=semver)
+[![Run tests](https://github.com/TRON-Bioinformatics/tronflow-mutect2/actions/workflows/automated_tests.yml/badge.svg?branch=master)](https://github.com/TRON-Bioinformatics/tronflow-mutect2/actions/workflows/automated_tests.yml)
 [![DOI](https://zenodo.org/badge/355860788.svg)](https://zenodo.org/badge/latestdoi/355860788)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://opensource.org/licenses/MIT)
 [![Powered by Nextflow](https://img.shields.io/badge/powered%20by-Nextflow-orange.svg?style=flat&colorA=E1523D&colorB=007D8A)](https://www.nextflow.io/)
@@ -27,13 +28,21 @@ Input:
     name1	tumor_bam1	normal_bam1
     name2	tumor_bam2	normal_bam2
     * reference: path to the FASTA genome reference (indexes expected *.fai, *.dict)
-    * intervals: path to a BED file containing the regions to analyse
-    * gnomad: path to the gnomad VCF
+    * gnomad: path to the gnomad VCF or other germline resource
     
 Optional input:
+    * intervals: path to a BED file containing the regions to analyse
     * output: the folder where to publish output
-    * memory: the ammount of memory used by each job (default: 16g)
-    * cpus: the number of CPUs used by each job (default: 2)
+    * memory_mutect2: the ammount of memory used by mutect2 (default: 16g)
+    * cpus_mutect2: the number of CPUs used by mutect2 (default: 2)
+    * memory_read_orientation: the ammount of memory used by learn read orientation (default: 16g)
+    * cpus_read_orientation: the number of CPUs used by learn read orientation (default: 2)
+    * memory_pileup: the ammount of memory used by pileup (default: 32g)
+    * cpus_pileup: the number of CPUs used by pileup (default: 2)
+    * memory_contamination: the ammount of memory used by contamination (default: 16g)
+    * cpus_contamination: the number of CPUs used by contamination (default: 2)
+    * memory_filter: the ammount of memory used by filter (default: 16g)
+    * cpus_filter: the number of CPUs used by filter (default: 2)
     * disable_common_germline_filter: disable the use of GnomAD to filter out common variants in the population
     from the somatic calls. The GnomAD resource is still required though as this common SNPs are used elsewhere to
     calculate the contamination (default: false)

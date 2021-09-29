@@ -1,0 +1,22 @@
+name: Automated tests
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v2
+      with:
+        distribution: 'zulu' # See 'Supported distributions' for available options
+        java-version: '11'
+    - uses: conda-incubator/setup-miniconda@v2
+    - name: Install dependencies
+      run: |
+        apt-get update && apt-get --assume-yes install wget make procps software-properties-common
+        wget -qO- https://get.nextflow.io | bash && cp nextflow /usr/local/bin/nextflow
+    - name: Run tests
+      run: |
+        make
