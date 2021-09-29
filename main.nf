@@ -32,10 +32,6 @@ if (!params.reference) {
     log.error "--reference is required"
     exit 1
 }
-if (!params.intervals) {
-    log.error "--intervals is required"
-    exit 1
-}
 if (!params.gnomad) {
     log.error "--gnomad is required"
     exit 1
@@ -76,10 +72,11 @@ process mutect2 {
     	germline_filter = params.disable_common_germline_filter ? "" : "--germline-resource ${params.gnomad}"
     	normal_inputs = normal_bam.split(",").collect({v -> "--input $v"}).join(" ")
     	tumor_inputs = tumor_bam.split(",").collect({v -> "--input $v"}).join(" ")
+    	intervals_option = params.intervals ? "--intervals ${params.intervals}" : ""
 	"""
     gatk --java-options '-Xmx${params.memory}' Mutect2 \
 	--reference ${params.reference} \
-	--intervals ${params.intervals} \
+	${intervals_option} \
 	${germline_filter} \
 	${normal_panel_option} \
 	${normal_inputs} --normal-sample normal \
@@ -122,9 +119,10 @@ process pileUpSummaries {
 
     script:
     tumor_inputs = tumor_bam.split(",").collect({v -> "--input $v"}).join(" ")
+    intervals_option = params.intervals ? "--intervals ${params.intervals}" : ""
 	"""
     gatk --java-options '-Xmx${params.memory}' GetPileupSummaries  \
-	--intervals ${params.intervals} \
+	${intervals_option} \
 	--variant ${params.gnomad} \
 	${tumor_inputs} \
 	--output ${name}.pileupsummaries.table

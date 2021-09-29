@@ -27,10 +27,10 @@ Input:
     name1	tumor_bam1	normal_bam1
     name2	tumor_bam2	normal_bam2
     * reference: path to the FASTA genome reference (indexes expected *.fai, *.dict)
-    * intervals: path to a BED file containing the regions to analyse
-    * gnomad: path to the gnomad VCF
+    * gnomad: path to the gnomad VCF or other germline resource
     
 Optional input:
+    * intervals: path to a BED file containing the regions to analyse
     * output: the folder where to publish output
     * memory_mutect2: the ammount of memory used by mutect2 (default: 16g)
     * cpus_mutect2: the number of CPUs used by mutect2 (default: 2)
