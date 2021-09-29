@@ -124,7 +124,7 @@ process pileUpSummaries {
     tumor_inputs = tumor_bam.split(",").collect({v -> "--input $v"}).join(" ")
 	"""
     gatk --java-options '-Xmx${params.memory}' GetPileupSummaries  \
-	--intervals ${params.gnomad} \
+	--intervals ${params.intervals} \
 	--variant ${params.gnomad} \
 	${tumor_inputs} \
 	--output ${name}.pileupsummaries.table
