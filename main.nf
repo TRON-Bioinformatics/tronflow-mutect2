@@ -8,8 +8,16 @@ params.intervals = false
 params.gnomad = false
 params.output = 'output'
 params.pon = false
-params.memory = "16g"
-params.cpus = 2
+params.memory_mutect2 = "16g"
+params.cpus_mutect2 = 2
+params.memory_read_orientation = "16g"
+params.cpus_read_orientation = 2
+params.memory_pileup = "32g"
+params.cpus_pileup = 2
+params.memory_contamination = "16g"
+params.cpus_contamination = 2
+params.memory_filter = "16g"
+params.cpus_filter = 2
 params.disable_common_germline_filter = false
 
 def helpMessage() {
@@ -51,8 +59,8 @@ if (params.input_files) {
 }
 
 process mutect2 {
-    cpus params.cpus
-    memory params.memory
+    cpus params.cpus_mutect2
+    memory params.memory_mutect2
     tag "${name}"
     publishDir "${params.output}/${name}", mode: "copy"
 
@@ -82,8 +90,8 @@ process mutect2 {
 }
 
 process learnReadOrientationModel {
-  cpus params.cpus
-  memory params.memory
+  cpus params.cpus_read_orientation
+  memory params.memory_read_orientation
   tag "${name}"
   publishDir "${params.output}/${name}", mode: "copy"
 
@@ -101,8 +109,8 @@ process learnReadOrientationModel {
 }
 
 process pileUpSummaries {
-    cpus params.cpus
-    memory params.memory
+    cpus params.cpus_pileup
+    memory params.memory_pileup
     tag "${name}"
     publishDir "${params.output}/${name}", mode: "copy"
 
@@ -124,8 +132,8 @@ process pileUpSummaries {
 }
 
 process calculateContamination {
-    cpus params.cpus
-    memory params.memory
+    cpus params.cpus_contamination
+    memory params.memory_contamination
     tag "${name}"
     publishDir "${params.output}/${name}", mode: "copy"
 
@@ -144,8 +152,8 @@ process calculateContamination {
 }
 
 process filterCalls {
-    cpus params.cpus
-    memory params.memory
+    cpus params.cpus_filter
+    memory params.memory_filter
     tag "${name}"
     publishDir "${params.output}/${name}", mode: "copy"
 

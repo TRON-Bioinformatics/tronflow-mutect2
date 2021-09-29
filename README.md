@@ -32,8 +32,16 @@ Input:
     
 Optional input:
     * output: the folder where to publish output
-    * memory: the ammount of memory used by each job (default: 16g)
-    * cpus: the number of CPUs used by each job (default: 2)
+    * memory_mutect2: the ammount of memory used by mutect2 (default: 16g)
+    * cpus_mutect2: the number of CPUs used by mutect2 (default: 2)
+    * memory_read_orientation: the ammount of memory used by learn read orientation (default: 16g)
+    * cpus_read_orientation: the number of CPUs used by learn read orientation (default: 2)
+    * memory_pileup: the ammount of memory used by pileup (default: 32g)
+    * cpus_pileup: the number of CPUs used by pileup (default: 2)
+    * memory_contamination: the ammount of memory used by contamination (default: 16g)
+    * cpus_contamination: the number of CPUs used by contamination (default: 2)
+    * memory_filter: the ammount of memory used by filter (default: 16g)
+    * cpus_filter: the number of CPUs used by filter (default: 2)
     * disable_common_germline_filter: disable the use of GnomAD to filter out common variants in the population
     from the somatic calls. The GnomAD resource is still required though as this common SNPs are used elsewhere to
     calculate the contamination (default: false)
