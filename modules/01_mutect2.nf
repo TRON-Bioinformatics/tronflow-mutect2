@@ -44,6 +44,3 @@ process MUTECT2 {
     --f1r2-tar-gz ${name}.f1r2.tar.gz
     """
 }
-
-
-git@gitlab.rlp.net:tron/tronflow-mutect2.git
