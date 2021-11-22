@@ -30,14 +30,20 @@ process MUTECT2 {
     tumor_inputs = tumor_bam.split(",").collect({v -> "--input $v"}).join(" ")
     intervals_option = params.intervals ? "--intervals ${params.intervals}" : ""
     """
+    normalRGSM="\$(samtools view -H ${normal_bam} | grep -oP '(?<=SM:)[^ |\t]*')"
+    tumorRGSM="\$(samtools view -H ${tumor_bam} | grep -oP '(?<=SM:)[^ |\t]*')"
+  
     gatk --java-options '-Xmx${params.memory_mutect2}' Mutect2 \
     --reference ${params.reference} \
     ${intervals_option} \
     ${germline_filter} \
     ${normal_panel_option} \
-    ${normal_inputs} --normal-sample normal \
-    ${tumor_inputs} --tumor-sample tumor \
+    ${normal_inputs} --normal-sample \${normalRGSM} \
+    ${tumor_inputs} --tumor-sample \${tumorRGSM} \
     --output ${name}.mutect2.unfiltered.vcf \
     --f1r2-tar-gz ${name}.f1r2.tar.gz
     """
 }
+
+
+git@gitlab.rlp.net:tron/tronflow-mutect2.git
