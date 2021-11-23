@@ -14,8 +14,7 @@ process MUTECT2 {
     tag "${name}"
     publishDir "${params.output}/${name}", mode: "copy"
 
-    conda (params.enable_conda ? "bioconda::gatk4=4.2.0.0" : null)
-    conda (params.enable_conda ? "bioconda::samtools=1.14" : null)
+    conda (params.enable_conda ? "bioconda::gatk4=4.2.0.0 bioconda::samtools=1.14" : null)
 
     input:
     tuple val(name), val(tumor_bam), val(normal_bam)
