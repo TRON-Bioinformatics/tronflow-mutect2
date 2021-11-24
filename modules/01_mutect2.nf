@@ -28,18 +28,17 @@ process MUTECT2 {
     germline_filter = params.disable_common_germline_filter ? "" : "--germline-resource ${params.gnomad}"
     normal_inputs = normal_bam.split(",").collect({v -> "--input $v"}).join(" ")
     tumor_inputs = tumor_bam.split(",").collect({v -> "--input $v"}).join(" ")
+    normalRGSM = normal_bam.split(",").collect({v -> "--normal-sample \$(samtools view -H $v | grep -oP '(?<=SM:)[^ |\\t]*')"}).first()
+    tumorRGSM = normal_bam.split(",").collect({v -> "--tumor-sample \$(samtools view -H $v | grep -oP '(?<=SM:)[^ |\\t]*')"}).first()
     intervals_option = params.intervals ? "--intervals ${params.intervals}" : ""
     """
-    normalRGSM="\$(samtools view -H ${normal_bam} | grep -oP '(?<=SM:)[^ |\t]*')"
-    tumorRGSM="\$(samtools view -H ${tumor_bam} | grep -oP '(?<=SM:)[^ |\t]*')"
-  
     gatk --java-options '-Xmx${params.memory_mutect2}' Mutect2 \
     --reference ${params.reference} \
     ${intervals_option} \
     ${germline_filter} \
     ${normal_panel_option} \
-    ${normal_inputs} --normal-sample \${normalRGSM} \
-    ${tumor_inputs} --tumor-sample \${tumorRGSM} \
+    ${normal_inputs} ${normalRGSM} \
+    ${tumor_inputs} ${tumorRGSM} \
     --output ${name}.mutect2.unfiltered.vcf \
     --f1r2-tar-gz ${name}.f1r2.tar.gz
     """
