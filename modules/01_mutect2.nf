@@ -28,8 +28,13 @@ process MUTECT2 {
     germline_filter = params.disable_common_germline_filter ? "" : "--germline-resource ${params.gnomad}"
     normal_inputs = normal_bam.split(",").collect({v -> "--input $v"}).join(" ")
     tumor_inputs = tumor_bam.split(",").collect({v -> "--input $v"}).join(" ")
-    normalRGSM = normal_bam.split(",").collect({v -> "--normal-sample \$(samtools view -H $v | grep -oP '(?<=SM:)[^ |\\t]*')"}).first()
-    tumorRGSM = normal_bam.split(",").collect({v -> "--tumor-sample \$(samtools view -H $v | grep -oP '(?<=SM:)[^ |\\t]*')"}).first()
+    normalRGSMs = normal_bam.split(",").collect({v -> "--normal-sample \$(samtools view -H $v | grep -oP '(?<=SM:)[^ |\\t]*')"})
+    assert normalRGSMs.unique().size() == 1 :  "The RGSM tag has to be the same between all normal samples"
+    normalRGSM = normalRGSMs.first()
+    tumorRGSMs = tumor_bam.split(",").collect({v -> "--tumor-sample \$(samtools view -H $v | grep -oP '(?<=SM:)[^ |\\t]*')"})
+    assert tumorRGSMs.unique().size() == 1 :  "The RGSM tag has to be the same between all tumor samples"
+    tumorRGSM = tumorRGSMs.first()
+    assert normalRGSM != tumorRGSM : "The RGSM tag in the BAM header has to be different between tumor and normal"
     intervals_option = params.intervals ? "--intervals ${params.intervals}" : ""
     """
     gatk --java-options '-Xmx${params.memory_mutect2}' Mutect2 \
