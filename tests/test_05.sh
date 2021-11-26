@@ -1,0 +1,17 @@
+#!/bin/bash
+
+##################################################################
+# Error condition: RGSM tag is the same in tumor and normal   ####
+##################################################################
+
+source bin/assert.sh
+output=output/test5
+
+echo -e "sample_name\t"`pwd`"/test_data/TESTX_S1_L001.bam\t"`pwd`"/test_data/TESTX_S1_L001.bam" > test_data/test_input.txt
+
+{ # try
+    nextflow main.nf -profile test,conda --output $output --input_files test_data/test_input.txt &&
+    assert_true false "Error condition not captured"
+} || { # catch
+    assert_true true
+}

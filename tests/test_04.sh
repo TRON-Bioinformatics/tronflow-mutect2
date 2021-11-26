@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-source tests/assert.sh
+source bin/assert.sh
 output=output/test4
 
 nextflow main.nf -profile test,conda --output $output --input_files test_data/test_input.txt --intervals false
