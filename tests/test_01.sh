@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-source tests/assert.sh
+source bin/assert.sh
 output=output/test1
 
 echo -e "sample_name\t"`pwd`"/test_data/TESTX_S1_L001.bam\t"`pwd`"/test_data/TESTX_S1_L002.bam" > test_data/test_input.txt

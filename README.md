@@ -6,15 +6,31 @@
 [![License](https://img.shields.io/badge/license-MIT-green)](https://opensource.org/licenses/MIT)
 [![Powered by Nextflow](https://img.shields.io/badge/powered%20by-Nextflow-orange.svg?style=flat&colorA=E1523D&colorB=007D8A)](https://www.nextflow.io/)
 
-A nextflow (Di Tommaso, 2017) pipeline implementing the Mutect2 (Benjamin, 2019) best practices somatic variant calling of tumor-normal pairs.
+The TronFlow BWA pipeline is part of a collection of computational workflows for tumor-normal pair 
+somatic variant calling.
 
+Find the documentation here [![Documentation Status](https://readthedocs.org/projects/tronflow-docs/badge/?version=latest)](https://tronflow-docs.readthedocs.io/en/latest/?badge=latest)
+
+
+This workflow implements the Mutect2 (Benjamin, 2019) best practices somatic variant calling of tumor-normal pairs.
 ![Mutect2 best practices](https://drive.google.com/uc?id=1rDDE0v_F2YCeXfQnS00w0MY3cAGQvfho)
 
 
 ## How to run it
 
+Run it from GitHub as follows:
 ```
-$ nextflow run tron-bioinformatics/tronflow-mutect2 -profile conda --help
+nextflow run tron-bioinformatics/tronflow-mutect2 -r v1.4.0 -profile conda --input_files $input --reference $reference --gnomad $gnomad
+```
+
+Otherwise download the project and run as follows:
+```
+nextflow main.nf -profile conda --input_files $input --reference $reference --gnomad $gnomad
+```
+
+Find the help as follows:
+```
+$ nextflow run tron-bioinformatics/tronflow-mutect2 --help
 
 Usage:
     nextflow run tron-bioinformatics/tronflow-mutect2 -profile conda --input_files input_files [--reference reference.fasta]
@@ -52,19 +68,35 @@ Output:
     * Other intermediate files
 ```
 
-## Requirements
 
-- GATK 4.2.0.0
-- Java 8
+### Input tables
 
-All dependencies are set in a conda environment, thus no installation is required if conda is used.
+The table with BAM files expects three tab-separated columns without a header.
+Multiple tumor or normal BAMs can be provided separated by commas.
 
-## Resources and data requirements
+| Sample name          | Tumor BAMs                      | Normal BAMs                  |
+|----------------------|---------------------------------|------------------------------|
+| sample_1             | /path/to/sample_1_tumor.bam      |    /path/to/sample_1_normal.bam   |
+| sample_2             | /path/to/sample_2_tumor_1.bam,/path/to/sample_2_tumor_2.bam      |    /path/to/sample_2_normal.bam,/path/to/sample_2_normal_2.bam   |
+
+### About read group tags in BAM headers
+
+Mutect2 relies on several read group tags to be present in the BAM header. 
+The commpulsory tags are: `RG:ID`, `RG:PU`, `RG:SM`, `RG:PL` and `RG:LB`.
+If your BAM files do not have these read group tags use 
+[Picard's AddOrReplaceReadGroups](https://gatk.broadinstitute.org/hc/en-us/articles/360037226472-AddOrReplaceReadGroups-Picard-).
+
+There are some further constraints in the sample tag (`RG:SM`) to distinguish normal and tumor samples.
+Hence, this workflow expects that tumor and normal BAMs have different values of RGSM; 
+and when replicates are provided all normal BAMs must have the same RGSM; and the same applies for all tumor BAMs.
+The workflow will fail if these constraints are not met.
+
+
+## Resources
 
 - FASTA reference genome with fai and dict indexes (see https://gatk.broadinstitute.org/hc/en-us/articles/360035531652-FASTA-Reference-genome-format for instructions on building the indices)
 - Analysis intervals file in BED format. These intervals determine the regions where variants will be called
 - VCF file with common germline variants (see [GnomAD](#gnomad))
-- Input BAM files require that read groups are added to them, furthermore tumor and normal must have different read groups (see [Adding read groups to BAM files](#adding-read-groups-to-bam-files)).
 - Optionally, a panel of normals (PON) may be used (see [PON](#pon))
 
 ### GnomAD
@@ -88,11 +120,6 @@ GnomAD file is in b37, thus it may be needed to lift over to hg19 for instance. 
 ```
 java -jar /code/picard/2.21.2/picard.jar LiftoverVcf INPUT=/projects/data/gatk_bundle/b37/gnomad.exomes.r2.1.1.sites.PASS.only_af.vcf.bgz OUTPUT=/projects/data/gatk_bundle/hg19/gnomad.exomes.
 ```
-
-### Adding read groups to BAM files
-
-Use Picard's AddOrReplaceReadGroups tool (see https://gatk.broadinstitute.org/hc/en-us/articles/360037226472-AddOrReplaceReadGroups-Picard-).
-You will need to set a different sample name for tumor and normal (parameter `-SM`), you can just use `tumor` and `normal` in absence of a better naming.
 
 ### Panel Of Normals (PON)
 
