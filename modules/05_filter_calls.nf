@@ -2,7 +2,7 @@ params.memory_filter = "16g"
 params.cpus_filter = 2
 params.output = 'output'
 params.reference = false
-params.args_filter = "--min-allele-fraction 0.05 --min-reads-per-strand 1 --unique-alt-read-count 4" // add to documentation
+params.args_filter = "--min-allele-fraction 0.05 --min-reads-per-strand 1 --unique-alt-read-count 4"
 
 
 process FILTER_CALLS {
