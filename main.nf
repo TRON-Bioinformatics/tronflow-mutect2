@@ -28,6 +28,7 @@ params.memory_filter = "16g"
 params.cpus_filter = 2
 params.disable_common_germline_filter = false
 params.funcotator = false
+params.db_funcotator = false
 
 def helpMessage() {
     log.info params.help_message
