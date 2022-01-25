@@ -2,6 +2,7 @@ params.memory_filter = "16g"
 params.cpus_filter = 2
 params.output = 'output'
 params.reference = false
+params.args_filter = "--min-allele-fraction 0.05 --min-reads-per-strand 1 --unique-alt-read-count 4" // add to documentation
 
 
 process FILTER_CALLS {
@@ -17,6 +18,7 @@ process FILTER_CALLS {
 
     output:
     tuple val(name), val("${params.output}/${name}/${name}.mutect2.vcf"), emit: final_vcfs
+    tuple val(name), file("${name}.mutect2.vcf"), emit: anno_input
     file "${name}.mutect2.vcf"
 
     """
@@ -26,6 +28,6 @@ process FILTER_CALLS {
     --tumor-segmentation ${segments_table} \
     --contamination-table ${contamination_table} \
     --ob-priors ${model} \
-    --output ${name}.mutect2.vcf
+    --output ${name}.mutect2.vcf ${params.args_filter}
     """
 }
