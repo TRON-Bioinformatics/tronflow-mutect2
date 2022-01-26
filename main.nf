@@ -72,7 +72,7 @@ workflow {
             LEARN_READ_ORIENTATION_MODEL.out.read_orientation_model).join(MUTECT2.out.unfiltered_vcfs))
 
     FILTER_CALLS.out.final_vcfs.map {it.join("\t")}.collectFile(name: "${params.output}/mutect2_output_files.txt", newLine: true)
-    if(params.funcotator){ // VCF output param
+    if(params.funcotator){
         FUNCOTATOR(FILTER_CALLS.out.anno_input)
     }
 
