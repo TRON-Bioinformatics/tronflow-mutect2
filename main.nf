@@ -28,7 +28,6 @@ params.memory_filter = "16g"
 params.cpus_filter = 2
 params.disable_common_germline_filter = false
 params.funcotator = false
-params.db_funcotator = false
 
 def helpMessage() {
     log.info params.help_message
@@ -44,10 +43,6 @@ if (!params.reference) {
 }
 if (!params.gnomad) {
     log.error "--gnomad is required"
-    exit 1
-}
-if (!params.db_funcotator & params.funcotator) {
-    log.error "--db_funcotator is required"
     exit 1
 }
 

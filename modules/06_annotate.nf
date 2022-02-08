@@ -1,11 +1,11 @@
 params.memory_funcotator = "16g"
 params.cpus_funcotator = 2
-params.db_funcotator = false
+params.funcotator = false
 params.reference = false
 params.reference_version_funcotator = "hg19"
 params.output_format_funcotator = "MAF"
 params.transcript_selection_mode_funcotator = "CANONICAL"
-params.args_funcotator = "--remove-filtered-variants true"
+params.args_funcotator = ""
 
 process FUNCOTATOR {
 
@@ -28,7 +28,7 @@ process FUNCOTATOR {
      --variant ${vcf} \
      --reference ${params.reference} \
      --ref-version ${params.reference_version_funcotator} \
-     --data-sources-path ${params.db_funcotator} \
+     --data-sources-path ${params.funcotator} \
      --output ${name}.mutect2.funcotated.maf \
      --output-file-format ${params.output_format_funcotator} \
      --transcript-selection-mode ${params.transcript_selection_mode_funcotator} \
