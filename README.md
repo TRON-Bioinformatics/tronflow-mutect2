@@ -62,6 +62,14 @@ Optional input:
     * disable_common_germline_filter: disable the use of GnomAD to filter out common variants in the population
     from the somatic calls. The GnomAD resource is still required though as this common SNPs are used elsewhere to
     calculate the contamination (default: false)
+    * args_filter: optional arguments to the FilterMutectCalls function of GATK (e.g.: "--min-allele-fraction 0.05 --min-reads-per-strand 1 --unique-alt-read-count 4") (see FilterMutectCalls documentation)
+    * funcotator: To use Funcotator, supply the path to a database to be used. (can be downloaded from GATK FTP server)
+    * cpus_funcotator: the number of CPUs used by Funcotator (default: 2)
+    * memory_funcotator: the ammount of memory used by filter (default: 16g)
+    * reference_version_funcotator: version of the reference genome (default: "hg19")
+    * output_format_funcotator: the output format of Funcotator. Can be VCF or MAF (default: "MAF")
+    * transcript_selection_mode_funcotator: transcript selection method can be CANONICAL, BEST_EFFECT or ALL. (default: CANONICAL)
+    * args_funcotator: optional arguments to Funcotator (e.g. "--remove-filtered-variants true")  (see Funcotator documentation)
 
 Output:
     * Output VCF
