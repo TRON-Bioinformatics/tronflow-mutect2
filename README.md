@@ -6,14 +6,21 @@
 [![License](https://img.shields.io/badge/license-MIT-green)](https://opensource.org/licenses/MIT)
 [![Powered by Nextflow](https://img.shields.io/badge/powered%20by-Nextflow-orange.svg?style=flat&colorA=E1523D&colorB=007D8A)](https://www.nextflow.io/)
 
-The TronFlow BWA pipeline is part of a collection of computational workflows for tumor-normal pair 
-somatic variant calling.
+The TronFlow Mutect2 pipeline is part of a collection of computational workflows for tumor-normal pair somatic variant calling.
 
 Find the documentation here [![Documentation Status](https://readthedocs.org/projects/tronflow-docs/badge/?version=latest)](https://tronflow-docs.readthedocs.io/en/latest/?badge=latest)
 
 
 This workflow implements the Mutect2 (Benjamin, 2019) best practices somatic variant calling of tumor-normal pairs.
 ![Mutect2 best practices](https://drive.google.com/uc?id=1rDDE0v_F2YCeXfQnS00w0MY3cAGQvfho)
+
+It has the following steps:
+* **Mutect2** - the somatic variant caller.
+* **Pile-up summaries** - summarizes counts of reads that support reference, alternate and other alleles for given sites.
+* **Learn read orientation model** - learn the prior probability of read orientation artifacts.
+* **Calculate contamination** - Given pileup data from GetPileupSummaries, calculates the fraction of reads coming from cross-sample contamination.
+* **Filter calls** - filters mutations from the raw Mutect2 variant calls
+* **Funcotator annotation** - add functional annotations (optional)
 
 
 ## How to run it
@@ -154,8 +161,15 @@ The multiple VCFs need to be combined with the GATK tool "CreateSomaticPanelOfNo
 
 This is implemented in the pipeline `mutect2_pon.vcf`.
 
+### Configuring Funcotator
 
-## How to run the PON pipeline
+Funcotator annotation is an optional step. To configure funcotator follow the indications here https://gatk.broadinstitute.org/hc/en-us/articles/360035889931-Funcotator-Information-and-Tutorial.
+
+In order to use funcotator provide the path to your local funcotator database with the parameter `--funcotator`.
+Also, make sure that the reference version provided to funcotator with `--reference_version_funcotator` is consistent with the provided reference with `--reference`. 
+
+
+## How to run the Panel of Normals (PON) pipeline
 
 ```
 $ nextflow mutect2_pon.nf --help
