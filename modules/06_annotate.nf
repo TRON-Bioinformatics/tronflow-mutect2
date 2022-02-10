@@ -1,5 +1,4 @@
 params.memory_funcotator = "16g"
-params.cpus_funcotator = 2
 params.funcotator = false
 params.reference = false
 params.reference_version_funcotator = "hg19"
@@ -9,7 +8,7 @@ params.args_funcotator = ""
 
 process FUNCOTATOR {
 
-    cpus params.cpus_funcotator
+    cpus 2
     memory params.memory_funcotator
     tag "${name}"
     publishDir "${params.output}/${name}", mode: "copy"

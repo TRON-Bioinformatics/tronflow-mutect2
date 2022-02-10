@@ -56,27 +56,23 @@ Input:
 Optional input:
     * intervals: path to a BED file containing the regions to analyse
     * output: the folder where to publish output
-    * memory_mutect2: the ammount of memory used by mutect2 (default: 16g)
-    * cpus_mutect2: the number of CPUs used by mutect2 (default: 2)
-    * memory_read_orientation: the ammount of memory used by learn read orientation (default: 16g)
-    * cpus_read_orientation: the number of CPUs used by learn read orientation (default: 2)
-    * memory_pileup: the ammount of memory used by pileup (default: 32g)
-    * cpus_pileup: the number of CPUs used by pileup (default: 2)
-    * memory_contamination: the ammount of memory used by contamination (default: 16g)
-    * cpus_contamination: the number of CPUs used by contamination (default: 2)
-    * memory_filter: the ammount of memory used by filter (default: 16g)
-    * cpus_filter: the number of CPUs used by filter (default: 2)
+    * enable_bam_output: outputs a new BAM file with the Mutect2 reassembly of reads (default: false)
     * disable_common_germline_filter: disable the use of GnomAD to filter out common variants in the population
     from the somatic calls. The GnomAD resource is still required though as this common SNPs are used elsewhere to
     calculate the contamination (default: false)
-    * args_filter: optional arguments to the FilterMutectCalls function of GATK (e.g.: "--min-allele-fraction 0.05 --min-reads-per-strand 1 --unique-alt-read-count 4") (see FilterMutectCalls documentation)
     * funcotator: To use Funcotator, supply the path to a database to be used. (can be downloaded from GATK FTP server)
-    * cpus_funcotator: the number of CPUs used by Funcotator (default: 2)
-    * memory_funcotator: the ammount of memory used by filter (default: 16g)
     * reference_version_funcotator: version of the reference genome (default: "hg19")
     * output_format_funcotator: the output format of Funcotator. Can be VCF or MAF (default: "MAF")
     * transcript_selection_mode_funcotator: transcript selection method can be CANONICAL, BEST_EFFECT or ALL. (default: CANONICAL)
+    * memory_mutect2: the ammount of memory used by mutect2 (default: 16g)
+    * memory_read_orientation: the ammount of memory used by learn read orientation (default: 16g)
+    * memory_pileup: the ammount of memory used by pileup (default: 32g)
+    * memory_contamination: the ammount of memory used by contamination (default: 16g)
+    * memory_filter: the ammount of memory used by filter (default: 16g)
+    * memory_funcotator: the ammount of memory used by filter (default: 16g)
+    * args_filter: optional arguments to the FilterMutectCalls function of GATK (e.g.: "--min-allele-fraction 0.05 --min-reads-per-strand 1 --unique-alt-read-count 4") (see FilterMutectCalls documentation)
     * args_funcotator: optional arguments to Funcotator (e.g. "--remove-filtered-variants true")  (see Funcotator documentation)
+    * args_mutect2: optional arguments to Mutect2 (e.g. "--sites-only-vcf-output")  (see Mutect2 documentation)
 
 Output:
     * Output VCF

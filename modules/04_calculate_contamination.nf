@@ -1,10 +1,9 @@
 params.memory_contamination = "16g"
-params.cpus_contamination = 2
 params.output = 'output'
 
 
 process CALCULATE_CONTAMINATION {
-    cpus params.cpus_contamination
+    cpus 2
     memory params.memory_contamination
     tag "${name}"
     publishDir "${params.output}/${name}", mode: "copy"

@@ -1,12 +1,11 @@
 params.memory_filter = "16g"
-params.cpus_filter = 2
 params.output = 'output'
 params.reference = false
 params.args_filter = ""
 
 
 process FILTER_CALLS {
-    cpus params.cpus_filter
+    cpus 2
     memory params.memory_filter
     tag "${name}"
     publishDir "${params.output}/${name}", mode: "copy"

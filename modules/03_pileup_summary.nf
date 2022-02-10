@@ -1,11 +1,10 @@
 params.memory_pileup = "32g"
-params.cpus_pileup = 2
 params.output = 'output'
 params.gnomad = false
 
 
 process PILEUP_SUMMARIES {
-    cpus params.cpus_pileup
+    cpus 2
     memory params.memory_pileup
     tag "${name}"
     publishDir "${params.output}/${name}", mode: "copy"

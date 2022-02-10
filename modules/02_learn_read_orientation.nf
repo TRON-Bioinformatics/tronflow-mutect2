@@ -1,10 +1,9 @@
 params.memory_read_orientation = "16g"
-params.cpus_read_orientation = 2
 params.output = 'output'
 
 
 process LEARN_READ_ORIENTATION_MODEL {
-  cpus params.cpus_read_orientation
+  cpus 2
   memory params.memory_read_orientation
   tag "${name}"
   publishDir "${params.output}/${name}", mode: "copy"
