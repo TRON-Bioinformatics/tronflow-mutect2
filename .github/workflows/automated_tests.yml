@@ -11,7 +11,7 @@ jobs:
     - uses: actions/setup-java@v2
       with:
         distribution: 'zulu' # See 'Supported distributions' for available options
-        java-version: '11'
+        java-version: '8'
     - uses: conda-incubator/setup-miniconda@v2
       with:
         auto-update-conda: true
