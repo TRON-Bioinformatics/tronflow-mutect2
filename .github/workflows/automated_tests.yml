@@ -18,7 +18,7 @@ jobs:
         channels: defaults,conda-forge,bioconda
     - name: Install dependencies
       run: |
-        apt-get update && apt-get --assume-yes install wget make procps
+        apt-get update && apt-get --assume-yes install wget make procps software-properties-common
         wget -qO- https://get.nextflow.io | bash && cp nextflow /usr/local/bin/nextflow
     - name: Cache conda environments
       uses: actions/cache@v2
