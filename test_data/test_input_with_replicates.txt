@@ -1,0 +1,1 @@
+sample_name_with_replicates	/home/priesgo/src/github/tronflow-mutect2/test_data/TESTX_S1_L001.bam,/home/priesgo/src/github/tronflow-mutect2/test_data/TESTX_S1_L001.bam	/home/priesgo/src/github/tronflow-mutect2/test_data/TESTX_S1_L002.bam,/home/priesgo/src/github/tronflow-mutect2/test_data/TESTX_S1_L002.bam
