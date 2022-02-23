@@ -11,14 +11,14 @@ jobs:
     - uses: actions/setup-java@v2
       with:
         distribution: 'zulu' # See 'Supported distributions' for available options
-        java-version: '11'
+        java-version: '8'
     - uses: conda-incubator/setup-miniconda@v2
       with:
         auto-update-conda: true
         channels: defaults,conda-forge,bioconda
     - name: Install dependencies
       run: |
-        apt-get update && apt-get --assume-yes install wget make procps software-properties-common
+        apt-get update && apt-get --assume-yes install wget make procps software-properties-common libzip-dev
         wget -qO- https://get.nextflow.io | bash && cp nextflow /usr/local/bin/nextflow
     - name: Cache conda environments
       uses: actions/cache@v2
