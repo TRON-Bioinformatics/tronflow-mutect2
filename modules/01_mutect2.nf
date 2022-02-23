@@ -23,7 +23,7 @@ process MUTECT2 {
     output:
     tuple val("${name}"), file("${name}.mutect2.unfiltered.vcf"), file("${name}.mutect2.unfiltered.vcf.stats"), emit: unfiltered_vcfs
     tuple val("${name}"), file("${name}.f1r2.tar.gz"), emit: f1r2_stats
-    tuple file("{name}.mutect2.assembled_haplotypes.bam"), optional: true
+    tuple file("${name}.mutect2.assembled_haplotypes.bam"), file("${name}.mutect2.assembled_haplotypes.bai"), optional: true
 
     script:
     normal_panel_option = params.pon ? "--panel-of-normals ${params.pon}" : ""
