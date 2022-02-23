@@ -1,16 +1,15 @@
 params.memory_pileup = "32g"
-params.cpus_pileup = 2
 params.output = 'output'
 params.gnomad = false
 
 
 process PILEUP_SUMMARIES {
-    cpus params.cpus_pileup
+    cpus 2
     memory params.memory_pileup
     tag "${name}"
     publishDir "${params.output}/${name}", mode: "copy"
 
-    conda (params.enable_conda ? "bioconda::gatk4=4.2.0.0" : null)
+    conda (params.enable_conda ? "bioconda::gatk4=4.2.5.0" : null)
 
     input:
     tuple val(name), val(tumor_bam), val(normal_bam)

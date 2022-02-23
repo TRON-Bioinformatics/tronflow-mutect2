@@ -1,0 +1,1 @@
+sample_name	/home/priesgo/src/github/tronflow-mutect2/test_data/SRR8244887.preprocessed.downsampled.bam	/home/priesgo/src/github/tronflow-mutect2/test_data/SRR8244836.preprocessed.downsampled.bam

@@ -8,7 +8,7 @@
 source bin/assert.sh
 output=output/test6
 
-echo -e "sample_name\t"`pwd`"/test_data/TESTX_S1_L001.bam,"`pwd`"/test_data/TESTX_S1_L002.bam\t"`pwd`"/test_data/TESTX_S1_L002.bam" > test_data/test_input.txt
+echo -e "sample_name\t"`pwd`"/test_data/SRR8244887.preprocessed.downsampled.bam,"`pwd`"/test_data/SRR8244836.preprocessed.downsampled.bam\t"`pwd`"/test_data/SRR8244836.preprocessed.downsampled.bam" > test_data/test_input.txt
 { # try
     nextflow main.nf -profile test,conda --output $output --input_files test_data/test_input.txt &&
     assert_true false "Error condition not captured"
@@ -16,7 +16,7 @@ echo -e "sample_name\t"`pwd`"/test_data/TESTX_S1_L001.bam,"`pwd`"/test_data/TEST
     assert_true true
 }
 
-echo -e "sample_name\t"`pwd`"/test_data/TESTX_S1_L001.bam\t"`pwd`"/test_data/TESTX_S1_L001.bam,"`pwd`"/test_data/TESTX_S1_L002.bam" > test_data/test_input.txt
+echo -e "sample_name\t"`pwd`"/test_data/SRR8244887.preprocessed.downsampled.bam\t"`pwd`"/test_data/SRR8244887.preprocessed.downsampled.bam,"`pwd`"/test_data/SRR8244836.preprocessed.downsampled.bam" > test_data/test_input.txt
 { # try
     nextflow main.nf -profile test,conda --output $output --input_files test_data/test_input.txt &&
     assert_true false "Error condition not captured"

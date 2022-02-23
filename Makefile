@@ -18,3 +18,6 @@ test:
 	bash tests/test_02.sh
 	bash tests/test_03.sh
 	bash tests/test_04.sh
+	bash tests/test_05.sh
+	bash tests/test_06.sh
+	bash tests/test_08.sh

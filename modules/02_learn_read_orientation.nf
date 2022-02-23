@@ -1,15 +1,14 @@
 params.memory_read_orientation = "16g"
-params.cpus_read_orientation = 2
 params.output = 'output'
 
 
 process LEARN_READ_ORIENTATION_MODEL {
-  cpus params.cpus_read_orientation
+  cpus 2
   memory params.memory_read_orientation
   tag "${name}"
   publishDir "${params.output}/${name}", mode: "copy"
 
-  conda (params.enable_conda ? "bioconda::gatk4=4.2.0.0" : null)
+  conda (params.enable_conda ? "bioconda::gatk4=4.2.5.0" : null)
 
   input:
   tuple val(name), file(f1r2_stats)

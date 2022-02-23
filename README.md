@@ -6,14 +6,21 @@
 [![License](https://img.shields.io/badge/license-MIT-green)](https://opensource.org/licenses/MIT)
 [![Powered by Nextflow](https://img.shields.io/badge/powered%20by-Nextflow-orange.svg?style=flat&colorA=E1523D&colorB=007D8A)](https://www.nextflow.io/)
 
-The TronFlow BWA pipeline is part of a collection of computational workflows for tumor-normal pair 
-somatic variant calling.
+The TronFlow Mutect2 pipeline is part of a collection of computational workflows for tumor-normal pair somatic variant calling.
 
 Find the documentation here [![Documentation Status](https://readthedocs.org/projects/tronflow-docs/badge/?version=latest)](https://tronflow-docs.readthedocs.io/en/latest/?badge=latest)
 
 
 This workflow implements the Mutect2 (Benjamin, 2019) best practices somatic variant calling of tumor-normal pairs.
 ![Mutect2 best practices](https://drive.google.com/uc?id=1rDDE0v_F2YCeXfQnS00w0MY3cAGQvfho)
+
+It has the following steps:
+* **Mutect2** - the somatic variant caller.
+* **Pile-up summaries** - summarizes counts of reads that support reference, alternate and other alleles for given sites.
+* **Learn read orientation model** - learn the prior probability of read orientation artifacts.
+* **Calculate contamination** - Given pileup data from GetPileupSummaries, calculates the fraction of reads coming from cross-sample contamination.
+* **Filter calls** - filters mutations from the raw Mutect2 variant calls
+* **Funcotator annotation** - add functional annotations (optional)
 
 
 ## How to run it
@@ -49,19 +56,23 @@ Input:
 Optional input:
     * intervals: path to a BED file containing the regions to analyse
     * output: the folder where to publish output
-    * memory_mutect2: the ammount of memory used by mutect2 (default: 16g)
-    * cpus_mutect2: the number of CPUs used by mutect2 (default: 2)
-    * memory_read_orientation: the ammount of memory used by learn read orientation (default: 16g)
-    * cpus_read_orientation: the number of CPUs used by learn read orientation (default: 2)
-    * memory_pileup: the ammount of memory used by pileup (default: 32g)
-    * cpus_pileup: the number of CPUs used by pileup (default: 2)
-    * memory_contamination: the ammount of memory used by contamination (default: 16g)
-    * cpus_contamination: the number of CPUs used by contamination (default: 2)
-    * memory_filter: the ammount of memory used by filter (default: 16g)
-    * cpus_filter: the number of CPUs used by filter (default: 2)
+    * enable_bam_output: outputs a new BAM file with the Mutect2 reassembly of reads (default: false)
     * disable_common_germline_filter: disable the use of GnomAD to filter out common variants in the population
     from the somatic calls. The GnomAD resource is still required though as this common SNPs are used elsewhere to
     calculate the contamination (default: false)
+    * funcotator: To use Funcotator, supply the path to a database to be used. (can be downloaded from GATK FTP server)
+    * reference_version_funcotator: version of the reference genome (default: "hg19")
+    * output_format_funcotator: the output format of Funcotator. Can be VCF or MAF (default: "MAF")
+    * transcript_selection_mode_funcotator: transcript selection method can be CANONICAL, BEST_EFFECT or ALL. (default: CANONICAL)
+    * memory_mutect2: the ammount of memory used by mutect2 (default: 16g)
+    * memory_read_orientation: the ammount of memory used by learn read orientation (default: 16g)
+    * memory_pileup: the ammount of memory used by pileup (default: 32g)
+    * memory_contamination: the ammount of memory used by contamination (default: 16g)
+    * memory_filter: the ammount of memory used by filter (default: 16g)
+    * memory_funcotator: the ammount of memory used by filter (default: 16g)
+    * args_filter: optional arguments to the FilterMutectCalls function of GATK (e.g.: "--min-allele-fraction 0.05 --min-reads-per-strand 1 --unique-alt-read-count 4") (see FilterMutectCalls documentation)
+    * args_funcotator: optional arguments to Funcotator (e.g. "--remove-filtered-variants true")  (see Funcotator documentation)
+    * args_mutect2: optional arguments to Mutect2 (e.g. "--sites-only-vcf-output")  (see Mutect2 documentation)
 
 Output:
     * Output VCF
@@ -146,8 +157,15 @@ The multiple VCFs need to be combined with the GATK tool "CreateSomaticPanelOfNo
 
 This is implemented in the pipeline `mutect2_pon.vcf`.
 
+### Configuring Funcotator
 
-## How to run the PON pipeline
+Funcotator annotation is an optional step. To configure funcotator follow the indications here https://gatk.broadinstitute.org/hc/en-us/articles/360035889931-Funcotator-Information-and-Tutorial.
+
+In order to use funcotator provide the path to your local funcotator database with the parameter `--funcotator`.
+Also, make sure that the reference version provided to funcotator with `--reference_version_funcotator` is consistent with the provided reference with `--reference`. 
+
+
+## How to run the Panel of Normals (PON) pipeline
 
 ```
 $ nextflow mutect2_pon.nf --help
