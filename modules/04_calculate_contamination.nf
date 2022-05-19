@@ -8,7 +8,7 @@ process CALCULATE_CONTAMINATION {
     tag "${name}"
     publishDir "${params.output}/${name}", mode: "copy"
 
-    conda (params.enable_conda ? "bioconda::gatk4=4.2.5.0" : null)
+    conda (params.enable_conda ? "bioconda::gatk4=4.2.6.1" : null)
 
     input:
     tuple val(name), file(table)
