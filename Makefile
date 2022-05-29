@@ -21,3 +21,4 @@ test:
 	bash tests/test_05.sh
 	bash tests/test_06.sh
 	bash tests/test_08.sh
+	bash tests/test_09.sh
