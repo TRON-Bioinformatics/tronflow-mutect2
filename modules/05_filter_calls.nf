@@ -21,8 +21,8 @@ process FILTER_CALLS {
     file "${name}.mutect2.vcf"
 
     script:
-    segments_table_param = segments_table == null? "" : "--tumor-segmentation ${segments_table}"
-    contamination_table_param = contamination_table == null? "" : "--contamination-table ${contamination_table}"
+    segments_table_param = segments_table instanceof List && segments_table.isEmpty() ? "" : "--tumor-segmentation ${segments_table}"
+    contamination_table_param = contamination_table instanceof List && contamination_table.isEmpty() ? "" : "--contamination-table ${contamination_table}"
     """
     gatk --java-options '-Xmx${params.memory_filter}' FilterMutectCalls \
     -V ${unfiltered_vcf} \
