@@ -20,12 +20,15 @@ process FILTER_CALLS {
     tuple val(name), file("${name}.mutect2.vcf"), emit: anno_input
     file "${name}.mutect2.vcf"
 
+    script:
+    segments_table_param = segments_table == null? "" : "--tumor-segmentation ${segments_table}"
+    contamination_table_param = contamination_table == null? "" : "--contamination-table ${contamination_table}"
     """
     gatk --java-options '-Xmx${params.memory_filter}' FilterMutectCalls \
     -V ${unfiltered_vcf} \
     --reference ${params.reference} \
-    --tumor-segmentation ${segments_table} \
-    --contamination-table ${contamination_table} \
+    ${segments_table_param} \
+    ${contamination_table_param} \
     --ob-priors ${model} \
     --output ${name}.mutect2.vcf ${params.args_filter}
     """

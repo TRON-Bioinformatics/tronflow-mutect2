@@ -41,10 +41,6 @@ if (!params.reference) {
     log.error "--reference is required"
     exit 1
 }
-if (!params.gnomad) {
-    log.error "--gnomad is required"
-    exit 1
-}
 
 // checks required inputs
 if (params.input_files) {
@@ -58,13 +54,22 @@ if (params.input_files) {
 }
 
 workflow {
+
     MUTECT2(input_files)
-    PILEUP_SUMMARIES(input_files)
     LEARN_READ_ORIENTATION_MODEL(MUTECT2.out.f1r2_stats)
-    CALCULATE_CONTAMINATION(PILEUP_SUMMARIES.out.pileupsummaries)
-    FILTER_CALLS(
-        CALCULATE_CONTAMINATION.out.contaminationTables.join(
-            LEARN_READ_ORIENTATION_MODEL.out.read_orientation_model).join(MUTECT2.out.unfiltered_vcfs))
+
+    if (params.gnomad) {
+        PILEUP_SUMMARIES(input_files)
+        CALCULATE_CONTAMINATION(PILEUP_SUMMARIES.out.pileupsummaries)
+        FILTER_CALLS(
+            CALCULATE_CONTAMINATION.out.contaminationTables.join(
+                LEARN_READ_ORIENTATION_MODEL.out.read_orientation_model).join(MUTECT2.out.unfiltered_vcfs))
+    }
+    else {
+        FILTER_CALLS(
+            input_files.map{ row-> tuple(row[0], null, null) }.join(
+                LEARN_READ_ORIENTATION_MODEL.out.read_orientation_model).join(MUTECT2.out.unfiltered_vcfs))
+    }
 
     FILTER_CALLS.out.final_vcfs.map {it.join("\t")}.collectFile(name: "${params.output}/mutect2_output_files.txt", newLine: true)
     if(params.funcotator){

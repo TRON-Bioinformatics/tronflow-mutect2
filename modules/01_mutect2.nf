@@ -27,7 +27,7 @@ process MUTECT2 {
 
     script:
     normal_panel_option = params.pon ? "--panel-of-normals ${params.pon}" : ""
-    germline_filter = params.disable_common_germline_filter ? "" : "--germline-resource ${params.gnomad}"
+    germline_filter = params.disable_common_germline_filter || ! params.gnomad ? "" : "--germline-resource ${params.gnomad}"
     normal_inputs = normal_bam.split(",").collect({v -> "--input $v"}).join(" ")
     tumor_inputs = tumor_bam.split(",").collect({v -> "--input $v"}).join(" ")
     normalRGSMs = normal_bam.split(",").collect({v -> "\$(samtools view -H $v | grep -oP '(?<=SM:)[^ |\\t]*' | head -1)"})
