@@ -21,13 +21,13 @@ process MUTECT2 {
     tuple val(name), val(tumor_bam), val(normal_bam)
 
     output:
-    tuple val("${name}"), file("${name}.mutect2.unfiltered.vcf"), file("${name}.mutect2.unfiltered.vcf.stats"), emit: unfiltered_vcfs
-    tuple val("${name}"), file("${name}.f1r2.tar.gz"), emit: f1r2_stats
-    tuple file("${name}.mutect2.assembled_haplotypes.bam"), file("${name}.mutect2.assembled_haplotypes.bai"), optional: true
+    tuple val("${name}"), path("${name}.mutect2.unfiltered.vcf"), path("${name}.mutect2.unfiltered.vcf.stats"), emit: unfiltered_vcfs
+    tuple val("${name}"), path("${name}.f1r2.tar.gz"), emit: f1r2_stats
+    tuple path("${name}.mutect2.assembled_haplotypes.bam"), path("${name}.mutect2.assembled_haplotypes.bai"), optional: true
 
     script:
     normal_panel_option = params.pon ? "--panel-of-normals ${params.pon}" : ""
-    germline_filter = params.disable_common_germline_filter ? "" : "--germline-resource ${params.gnomad}"
+    germline_filter = params.disable_common_germline_filter || ! params.gnomad ? "" : "--germline-resource ${params.gnomad}"
     normal_inputs = normal_bam.split(",").collect({v -> "--input $v"}).join(" ")
     tumor_inputs = tumor_bam.split(",").collect({v -> "--input $v"}).join(" ")
     normalRGSMs = normal_bam.split(",").collect({v -> "\$(samtools view -H $v | grep -oP '(?<=SM:)[^ |\\t]*' | head -1)"})

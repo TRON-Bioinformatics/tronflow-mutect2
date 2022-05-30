@@ -12,21 +12,8 @@ include { FUNCOTATOR } from './modules/06_annotate'
 params.help= false
 params.input_files = false
 params.reference = false
-params.intervals = false
 params.gnomad = false
 params.output = 'output'
-params.pon = false
-params.memory_mutect2 = "16g"
-params.cpus_mutect2 = 2
-params.memory_read_orientation = "16g"
-params.cpus_read_orientation = 2
-params.memory_pileup = "32g"
-params.cpus_pileup = 2
-params.memory_contamination = "16g"
-params.cpus_contamination = 2
-params.memory_filter = "16g"
-params.cpus_filter = 2
-params.disable_common_germline_filter = false
 params.funcotator = false
 
 def helpMessage() {
@@ -39,10 +26,6 @@ if (params.help) {
 }
 if (!params.reference) {
     log.error "--reference is required"
-    exit 1
-}
-if (!params.gnomad) {
-    log.error "--gnomad is required"
     exit 1
 }
 
@@ -58,17 +41,25 @@ if (params.input_files) {
 }
 
 workflow {
+
     MUTECT2(input_files)
-    PILEUP_SUMMARIES(input_files)
     LEARN_READ_ORIENTATION_MODEL(MUTECT2.out.f1r2_stats)
-    CALCULATE_CONTAMINATION(PILEUP_SUMMARIES.out.pileupsummaries)
-    FILTER_CALLS(
-        CALCULATE_CONTAMINATION.out.contaminationTables.join(
-            LEARN_READ_ORIENTATION_MODEL.out.read_orientation_model).join(MUTECT2.out.unfiltered_vcfs))
+
+    if (params.gnomad) {
+        PILEUP_SUMMARIES(input_files)
+        CALCULATE_CONTAMINATION(PILEUP_SUMMARIES.out.pileupsummaries)
+        FILTER_CALLS(
+            CALCULATE_CONTAMINATION.out.contaminationTables.join(
+                LEARN_READ_ORIENTATION_MODEL.out.read_orientation_model).join(MUTECT2.out.unfiltered_vcfs))
+    }
+    else {
+        FILTER_CALLS(
+            input_files.map{ row-> tuple(row[0], file("dummy"), file("dummy2")) }.join(
+                LEARN_READ_ORIENTATION_MODEL.out.read_orientation_model).join(MUTECT2.out.unfiltered_vcfs))
+    }
 
     FILTER_CALLS.out.final_vcfs.map {it.join("\t")}.collectFile(name: "${params.output}/mutect2_output_files.txt", newLine: true)
     if(params.funcotator){
         FUNCOTATOR(FILTER_CALLS.out.anno_input)
     }
-
 }

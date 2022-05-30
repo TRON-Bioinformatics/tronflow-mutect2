@@ -13,19 +13,22 @@ process FILTER_CALLS {
     conda (params.enable_conda ? "bioconda::gatk4=4.2.6.1" : null)
 
     input:
-    tuple val(name), file(segments_table), file(contamination_table), file(model), file(unfiltered_vcf), file(vcf_stats)
+    tuple val(name), path(segments_table), path(contamination_table), path(model), path(unfiltered_vcf), path(vcf_stats)
 
     output:
     tuple val(name), val("${params.output}/${name}/${name}.mutect2.vcf"), emit: final_vcfs
-    tuple val(name), file("${name}.mutect2.vcf"), emit: anno_input
-    file "${name}.mutect2.vcf"
+    tuple val(name), path("${name}.mutect2.vcf"), emit: anno_input
+    path "${name}.mutect2.vcf"
 
+    script:
+    segments_table_param = segments_table.exists() ? "--tumor-segmentation ${segments_table}" : ""
+    contamination_table_param = contamination_table.exists() ? "--contamination-table ${contamination_table}" : ""
     """
     gatk --java-options '-Xmx${params.memory_filter}' FilterMutectCalls \
     -V ${unfiltered_vcf} \
     --reference ${params.reference} \
-    --tumor-segmentation ${segments_table} \
-    --contamination-table ${contamination_table} \
+    ${segments_table_param} \
+    ${contamination_table_param} \
     --ob-priors ${model} \
     --output ${name}.mutect2.vcf ${params.args_filter}
     """
