@@ -11,10 +11,10 @@ process CALCULATE_CONTAMINATION {
     conda (params.enable_conda ? "bioconda::gatk4=4.2.6.1" : null)
 
     input:
-    tuple val(name), file(table)
+    tuple val(name), path(table)
 
     output:
-    tuple val(name), file("${name}.segments.table"), file("${name}.calculatecontamination.table"), emit: contaminationTables
+    tuple val(name), path("${name}.segments.table"), path("${name}.calculatecontamination.table"), emit: contaminationTables
 
     """
     gatk --java-options '-Xmx${params.memory_contamination}' CalculateContamination \

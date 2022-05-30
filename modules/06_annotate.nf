@@ -16,11 +16,11 @@ process FUNCOTATOR {
     conda (params.enable_conda ? "bioconda::gatk4=4.2.6.1" : null)
 
     input:
-    tuple val(name), file(vcf)
+    tuple val(name), path(vcf)
 
     output:
     tuple val(name), val("${params.output}/${name}/${name}.mutect2.funcotated.vcf"), emit: vcf_anno
-    file "${name}.mutect2.funcotated.maf"
+    path "${name}.mutect2.funcotated.maf"
 
     """
     gatk --java-options '-Xmx${params.memory_funcotator}' Funcotator \

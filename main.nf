@@ -67,7 +67,7 @@ workflow {
     }
     else {
         FILTER_CALLS(
-            input_files.map{ row-> tuple(row[0], file("dummy"), file("dummy2")) }.join(
+            input_files.map{ row-> tuple(row[0], path("dummy"), path("dummy2")) }.join(
                 LEARN_READ_ORIENTATION_MODEL.out.read_orientation_model).join(MUTECT2.out.unfiltered_vcfs))
     }
 

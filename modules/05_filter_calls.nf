@@ -13,12 +13,12 @@ process FILTER_CALLS {
     conda (params.enable_conda ? "bioconda::gatk4=4.2.6.1" : null)
 
     input:
-    tuple val(name), file(segments_table), file(contamination_table), file(model), file(unfiltered_vcf), file(vcf_stats)
+    tuple val(name), path(segments_table), path(contamination_table), path(model), path(unfiltered_vcf), path(vcf_stats)
 
     output:
     tuple val(name), val("${params.output}/${name}/${name}.mutect2.vcf"), emit: final_vcfs
-    tuple val(name), file("${name}.mutect2.vcf"), emit: anno_input
-    file "${name}.mutect2.vcf"
+    tuple val(name), path("${name}.mutect2.vcf"), emit: anno_input
+    path "${name}.mutect2.vcf"
 
     script:
     segments_table_param = segments_table.checkIfExists() ? "--tumor-segmentation ${segments_table}" : ""

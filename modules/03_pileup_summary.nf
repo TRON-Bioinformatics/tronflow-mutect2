@@ -15,7 +15,7 @@ process PILEUP_SUMMARIES {
     tuple val(name), val(tumor_bam), val(normal_bam)
 
     output:
-    tuple val("${name}"), file("${name}.pileupsummaries.table"), emit: pileupsummaries
+    tuple val("${name}"), path("${name}.pileupsummaries.table"), emit: pileupsummaries
 
     script:
     tumor_inputs = tumor_bam.split(",").collect({v -> "--input $v"}).join(" ")
