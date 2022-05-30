@@ -53,6 +53,9 @@ Input:
     * reference: path to the FASTA genome reference (indexes expected *.fai, *.dict)
     
 Optional input:
+    * input_name: sample name (alternative to --input_files)
+    * input_tumor_bam: comma separated list of tumor BAMs (alternative to --input_files)
+    * input_normal_bam: comma separated list of normal BAMs (alternative to --input_files)
     * gnomad: path to the gnomad VCF or other germline resource (recommended). If not provided the contamination will 
     not be estimated and the filter of common germline variants will be disabled
     * intervals: path to a BED file containing the regions to analyse

@@ -11,6 +11,9 @@ include { FUNCOTATOR } from './modules/06_annotate'
 
 params.help= false
 params.input_files = false
+params.input_name = false
+params.input_tumor_bam = false
+params.input_normal_bam = false
 params.reference = false
 params.gnomad = false
 params.output = 'output'
@@ -35,6 +38,10 @@ if (params.input_files) {
     .fromPath(params.input_files)
     .splitCsv(header: ['name', 'tumor_bam', 'normal_bam'], sep: "\t")
     .map{ row-> tuple(row.name, row.tumor_bam, row.normal_bam) }
+    .set { input_files }
+} else if (params.input_name && params.input_tumor_bam && params.input_normal_bam) {
+   Channel
+    .fromList([tuple(params.input_name, params.input_tumor_bam, params.input_normal_bam)])
     .set { input_files }
 } else {
   exit 1, "Input file not specified!"
