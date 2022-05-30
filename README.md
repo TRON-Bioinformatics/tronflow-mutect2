@@ -16,9 +16,9 @@ This workflow implements the Mutect2 (Benjamin, 2019) best practices somatic var
 
 It has the following steps:
 * **Mutect2** - the somatic variant caller.
-* **Pile-up summaries** - summarizes counts of reads that support reference, alternate and other alleles for given sites.
 * **Learn read orientation model** - learn the prior probability of read orientation artifacts.
-* **Calculate contamination** - Given pileup data from GetPileupSummaries, calculates the fraction of reads coming from cross-sample contamination.
+* **Pile-up summaries** - summarizes counts of reads that support reference, alternate and other alleles for given sites (optional).
+* **Calculate contamination** - Given pileup data from GetPileupSummaries, calculates the fraction of reads coming from cross-sample contamination (optional).
 * **Filter calls** - filters mutations from the raw Mutect2 variant calls
 * **Funcotator annotation** - add functional annotations (optional)
 
@@ -51,14 +51,15 @@ Input:
     name1	tumor_bam1	normal_bam1
     name2	tumor_bam2	normal_bam2
     * reference: path to the FASTA genome reference (indexes expected *.fai, *.dict)
-    * gnomad: path to the gnomad VCF or other germline resource
     
 Optional input:
+    * gnomad: path to the gnomad VCF or other germline resource (recommended). If not provided the contamination will 
+    not be estimated and the filter of common germline variants will be disabled
     * intervals: path to a BED file containing the regions to analyse
-    * output: the folder where to publish output
+    * output: the folder where to publish output (default: output)
     * enable_bam_output: outputs a new BAM file with the Mutect2 reassembly of reads (default: false)
     * disable_common_germline_filter: disable the use of GnomAD to filter out common variants in the population
-    from the somatic calls. The GnomAD resource is still required though as this common SNPs are used elsewhere to
+    from the somatic calls. The GnomAD can still be provided though as this common SNPs are used elsewhere to
     calculate the contamination (default: false)
     * funcotator: To use Funcotator, supply the path to a database to be used. (can be downloaded from GATK FTP server)
     * reference_version_funcotator: version of the reference genome (default: "hg19")
@@ -70,7 +71,7 @@ Optional input:
     * memory_contamination: the ammount of memory used by contamination (default: 16g)
     * memory_filter: the ammount of memory used by filter (default: 16g)
     * memory_funcotator: the ammount of memory used by filter (default: 16g)
-    * args_filter: optional arguments to the FilterMutectCalls function of GATK (e.g.: "--min-allele-fraction 0.05 --min-reads-per-strand 1 --unique-alt-read-count 4") (see FilterMutectCalls documentation)
+    * args_filter: optional arguments to the FilterMutectCalls function of GATK (e.g.: "--contamination-estimate 0.4 --min-allele-fraction 0.05 --min-reads-per-strand 1 --unique-alt-read-count 4") (see FilterMutectCalls documentation)
     * args_funcotator: optional arguments to Funcotator (e.g. "--remove-filtered-variants true")  (see Funcotator documentation)
     * args_mutect2: optional arguments to Mutect2 (e.g. "--sites-only-vcf-output")  (see Mutect2 documentation)
 

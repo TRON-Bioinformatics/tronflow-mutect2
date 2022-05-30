@@ -12,21 +12,8 @@ include { FUNCOTATOR } from './modules/06_annotate'
 params.help= false
 params.input_files = false
 params.reference = false
-params.intervals = false
 params.gnomad = false
 params.output = 'output'
-params.pon = false
-params.memory_mutect2 = "16g"
-params.cpus_mutect2 = 2
-params.memory_read_orientation = "16g"
-params.cpus_read_orientation = 2
-params.memory_pileup = "32g"
-params.cpus_pileup = 2
-params.memory_contamination = "16g"
-params.cpus_contamination = 2
-params.memory_filter = "16g"
-params.cpus_filter = 2
-params.disable_common_germline_filter = false
 params.funcotator = false
 
 def helpMessage() {
@@ -75,5 +62,4 @@ workflow {
     if(params.funcotator){
         FUNCOTATOR(FILTER_CALLS.out.anno_input)
     }
-
 }
