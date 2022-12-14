@@ -58,6 +58,7 @@ Optional input:
     * input_normal_bam: comma separated list of normal BAMs (alternative to --input_files)
     * gnomad: path to the gnomad VCF or other germline resource (recommended). If not provided the contamination will 
     not be estimated and the filter of common germline variants will be disabled
+    * pon: path to the panel of normals VCF
     * intervals: path to a BED file containing the regions to analyse
     * output: the folder where to publish output (default: output)
     * enable_bam_output: outputs a new BAM file with the Mutect2 reassembly of reads (default: false)
@@ -160,6 +161,8 @@ Note the parameter "--max-mnp-distance 0" is needed to avoid MNPs being called.
 The multiple VCFs need to be combined with the GATK tool "CreateSomaticPanelOfNormals".
 
 This is implemented in the pipeline `mutect2_pon.vcf`.
+
+Once the panel of normals is created pass it to the workflow using the parameter `--pon`.
 
 ### Configuring Funcotator
 
