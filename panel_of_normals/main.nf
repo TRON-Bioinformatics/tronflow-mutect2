@@ -11,7 +11,7 @@ params.input_files = false
 params.intervals = false
 params.max_mnp_distance = 0
 params.memory_mutect2 = "16g"
-params.memory_create_genomics_db = "8g"
+params.memory_create_genomics_db = "16g"
 params.memory_create_pon = "32g"
 params.reference = false
 params.output = "output"
@@ -67,18 +67,20 @@ process MUTECT2 {
         intervals_option = params.intervals ? "--intervals ${params.intervals}" : ""
 
         """
+        mkdir -p `pwd`/scratch/tmp
         gatk --java-options '-Xmx${params.memory_mutect2}' Mutect2 \\
             --reference ${params.reference} \\
             ${intervals_option} \\
             --input ${bam} \\
             --tumor-sample ${name} \\
             --max-mnp-distance ${params.max_mnp_distance} \\
-            --output ${name}.mutect2.unfiltered.vcf
+            --output ${name}.mutect2.unfiltered.vcf \\
+            --tmp-dir `pwd`/scratch/tmp
         """
 }
 
 process CREATE_GENOMICS_DB {
-    cpus 1
+    cpus 2
     memory params.memory_create_genomics_db
     tag "genomics_db"
 
@@ -101,6 +103,9 @@ process CREATE_GENOMICS_DB {
             ${intervals_option} \\
             --genomicsdb-workspace-path genomics_db \\
             --tmp-dir `pwd`/scratch/tmp \\
+            --genomicsdb-shared-posixfs-optimizations true \\
+            --batch-size 50 \\
+            --bypass-feature-reader \\
             ${input_vcfs}
         """
 }
@@ -122,11 +127,13 @@ process CREATE_PON {
 
     script:
     	"""
+        mkdir -p `pwd`/scratch/tmp
         gatk --java-options '-Xmx${params.memory_create_pon}' CreateSomaticPanelOfNormals \\
             --reference ${params.reference} \\
             --germline-resource ${params.gnomad} \\
             --variant gendb://${genomics_db} \\
-            --output pon.vcf
+            --output pon.vcf \\
+            --tmp-dir `pwd`/scratch/tmp
     	"""
 }
 
@@ -135,11 +142,11 @@ process CREATE_PON {
 workflow {
     MUTECT2(input_files)
 
-    CREATE_GENOMICS_DB(
-        MUTECT2.out.vcf
-            .map { name, vcf -> vcf }
-            .collect()
-    )
+    // CREATE_GENOMICS_DB(
+    //     MUTECT2.out.vcf
+    //         .map { name, vcf -> vcf }
+    //         .collect()
+    // )
 
-    CREATE_PON(CREATE_GENOMICS_DB.out)
+    // CREATE_PON(CREATE_GENOMICS_DB.out)
 }
