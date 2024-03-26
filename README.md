@@ -147,7 +147,7 @@ To compute the PON, we implemented a best practice [Nextflow pipeline](panel_of_
 - [(How to) Call somatic mutations using GATK4 Mutect2](https://gatk.broadinstitute.org/hc/en-us/articles/360035531132--How-to-Call-somatic-mutations-using-GATK4-Mutect2)  
 - [Panel of Normals (PON)](https://gatk.broadinstitute.org/hc/en-us/articles/360035890631-Panel-of-Normals-PON)  
 
-Please note that the new best practice workflow according to the GATK documentation (see also [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035531132--How-to-Call-somatic-mutations-using-GATK4-Mutect2)) now uses GenomicsDB for scalability. Therefore, we included a new step for `GenomicsDBImport` in our pipeline. 
+Please note that the new best practice workflow according to the GATK documentation (see also [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035531132--How-to-Call-somatic-mutations-using-GATK4-Mutect2)) now uses GenomicsDB for scalability. Therefore, we included a new step for `GenomicsDBImport` in our pipeline. To improve the performance of this step, we applied the recommendations according to GATK's [GenomicsDBImport usage and performance guidelines](https://gatk.broadinstitute.org/hc/en-us/articles/360056138571-GenomicsDBImport-usage-and-performance-guidelines). 
 
 ### Configuring Funcotator
 
