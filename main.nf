@@ -15,7 +15,8 @@ params.input_name = false
 params.input_tumor_bam = false
 params.input_normal_bam = false
 params.reference = false
-params.gnomad = false
+params.mutect2_gnomad = false
+params.pileup_gnomad = false
 params.output = 'output'
 params.funcotator = false
 
@@ -52,7 +53,7 @@ workflow {
     MUTECT2(input_files)
     LEARN_READ_ORIENTATION_MODEL(MUTECT2.out.f1r2_stats)
 
-    if (params.gnomad) {
+    if (params.pileup_gnomad) {
         PILEUP_SUMMARIES(input_files)
         CALCULATE_CONTAMINATION(PILEUP_SUMMARIES.out.pileupsummaries)
         FILTER_CALLS(

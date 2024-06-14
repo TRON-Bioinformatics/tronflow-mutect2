@@ -27,12 +27,12 @@ It has the following steps:
 
 Run it from GitHub as follows:
 ```
-nextflow run tron-bioinformatics/tronflow-mutect2 -r v1.4.0 -profile conda --input_files $input --reference $reference --gnomad $gnomad
+nextflow run tron-bioinformatics/tronflow-mutect2 -r v1.4.0 -profile conda --input_files $input --reference $reference --mutect2_gnomad $gnomad_afonly --pileup_gnomad $gnomad_smallexac
 ```
 
 Otherwise download the project and run as follows:
 ```
-nextflow main.nf -profile conda --input_files $input --reference $reference --gnomad $gnomad
+nextflow main.nf -profile conda --input_files $input --reference $reference --mutect2_gnomad $gnomad_afonly --pileup_gnomad $gnomad_smallexac
 ```
 
 Find the help as follows:
@@ -56,8 +56,8 @@ Optional input:
     * input_name: sample name (alternative to --input_files)
     * input_tumor_bam: comma separated list of tumor BAMs (alternative to --input_files)
     * input_normal_bam: comma separated list of normal BAMs (alternative to --input_files)
-    * gnomad: path to the gnomad VCF or other germline resource (recommended). If not provided the contamination will 
-    not be estimated and the filter of common germline variants will be disabled
+    * mutect2_gnomad: path to gnomad AF only or other germline resource (recommended). If not provided, the filter of common germline variants will be disabled.
+    * pileup_gnomad: path to small exac gnomad VCF to estimate the contamination (recommended)
     * intervals: path to a BED file containing the regions to analyse
     * output: the folder where to publish output (default: output)
     * enable_bam_output: outputs a new BAM file with the Mutect2 reassembly of reads (default: false)

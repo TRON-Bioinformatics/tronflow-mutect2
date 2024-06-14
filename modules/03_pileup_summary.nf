@@ -1,6 +1,6 @@
 params.memory_pileup = "32g"
 params.output = 'output'
-params.gnomad = false
+params.pileup_gnomad = false
 
 
 process PILEUP_SUMMARIES {
@@ -21,8 +21,8 @@ process PILEUP_SUMMARIES {
     tumor_inputs = tumor_bam.split(",").collect({v -> "--input $v"}).join(" ")
     """
     gatk --java-options '-Xmx${params.memory_pileup}' GetPileupSummaries  \
-    --intervals ${params.gnomad} \
-    --variant ${params.gnomad} \
+    --intervals ${params.pileup_gnomad} \
+    --variant ${params.pileup_gnomad} \
     ${tumor_inputs} \
     --output ${name}.pileupsummaries.table
     """
