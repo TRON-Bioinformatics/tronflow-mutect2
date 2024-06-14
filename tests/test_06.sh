@@ -10,7 +10,7 @@ output=output/test6
 
 echo -e "sample_name\t"`pwd`"/test_data/SRR8244887.preprocessed.downsampled.bam,"`pwd`"/test_data/SRR8244836.preprocessed.downsampled.bam\t"`pwd`"/test_data/SRR8244836.preprocessed.downsampled.bam" > test_data/test_input.txt
 { # try
-    nextflow main.nf -profile test,conda --output $output --input_files test_data/test_input.txt &&
+    nextflow main.nf -profile test,conda,ci --output $output --input_files test_data/test_input.txt &&
     assert_true false "Error condition not captured"
 } || { # catch
     assert_true true
@@ -18,7 +18,7 @@ echo -e "sample_name\t"`pwd`"/test_data/SRR8244887.preprocessed.downsampled.bam,
 
 echo -e "sample_name\t"`pwd`"/test_data/SRR8244887.preprocessed.downsampled.bam\t"`pwd`"/test_data/SRR8244887.preprocessed.downsampled.bam,"`pwd`"/test_data/SRR8244836.preprocessed.downsampled.bam" > test_data/test_input.txt
 { # try
-    nextflow main.nf -profile test,conda --output $output --input_files test_data/test_input.txt &&
+    nextflow main.nf -profile test,conda,ci --output $output --input_files test_data/test_input.txt &&
     assert_true false "Error condition not captured"
 } || { # catch
     assert_true true
