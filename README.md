@@ -139,28 +139,16 @@ java -jar /code/picard/2.21.2/picard.jar LiftoverVcf INPUT=/projects/data/gatk_b
 
 ### Panel Of Normals (PON)
 
-The PON is used to filter out technical artifacts from the somatic variant calls. The PON is recommended to be formed from technically similar samples (ie: same sequencing platform, same sample preparation), from healthy and young individuals and to be formed by a minimum of 40 samples (see https://gatkforums.broadinstitute.org/gatk/discussion/11053/panel-of-normals-pon ).
+The PON is used to filter out technical artifacts from the somatic variant calls. The PON is recommended to be formed from technically similar samples (ie: same sequencing platform, same sample preparation), from healthy and young individuals and to be formed by a minimum of 40 samples (see [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890631-Panel-of-Normals-PON) for further details).
 
 The normal samples are processed by the BAM preprocessing pipeline including marking duplicates and BQSR.
 
-Run MuTect2 on each normal sample as follows:
+To compute the PON, we implemented a best practice [Nextflow pipeline](panel_of_normals/main.nf) according to the GATK documentation:
 
-```
-java -Xmx16g -jar /code/gatk/4.1.3.0/gatk-package-4.1.3.0-local.jar \
-    Mutect2 \
-    --reference ${params.reference} \
-    --intervals ${interval} \
-    --input ${bam} \
-    --tumor-sample ${name} \
-    --max-mnp-distance 0 \
-    --output ${bam.baseName}.${interval.baseName}.mutect.vcf
-```
+- [(How to) Call somatic mutations using GATK4 Mutect2](https://gatk.broadinstitute.org/hc/en-us/articles/360035531132--How-to-Call-somatic-mutations-using-GATK4-Mutect2)  
+- [Panel of Normals (PON)](https://gatk.broadinstitute.org/hc/en-us/articles/360035890631-Panel-of-Normals-PON)  
 
-Note the parameter "--max-mnp-distance 0" is needed to avoid MNPs being called.
-
-The multiple VCFs need to be combined with the GATK tool "CreateSomaticPanelOfNormals".
-
-This is implemented in the pipeline `mutect2_pon.vcf`.
+Please note that the new best practice workflow according to the GATK documentation (see also [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035531132--How-to-Call-somatic-mutations-using-GATK4-Mutect2)) now uses GenomicsDB for scalability. Therefore, we included a new step for `GenomicsDBImport` in our pipeline. To improve the performance of this step, we applied the recommendations according to GATK's [GenomicsDBImport usage and performance guidelines](https://gatk.broadinstitute.org/hc/en-us/articles/360056138571-GenomicsDBImport-usage-and-performance-guidelines). 
 
 Once the panel of normals is created pass it to the workflow using the parameter `--pon`.
 
@@ -174,25 +162,37 @@ Also, make sure that the reference version provided to funcotator with `--refere
 
 ## How to run the Panel of Normals (PON) pipeline
 
-```
-$ nextflow mutect2_pon.nf --help
-Usage:
-    mutect2_pon.nf --input_files input_files
+```bash
+TRON-Bioinformatics/tronflow-mutect2/panel_of_normals v1.8.0
+Authors: Pablo Riesgo-Ferreiro, Özlem Muslu, Luisa Bresadola, Julian Thomas Mohr
 
-This workflow aims to compute a panel of normals to be used with MuTect2
+MuTect2 best practices workflow to create a panel of normals
+
+Usage:
+    nextflow run main.nf --input_files INPUT_FILES --reference REFERENCE --intervals INTERVALS --gnomad GNOMAD [--output [OUTPUT]] [--max_mnp_distance [MAX_MNP_DISTANCE]] [--memory_mutect2 [MEMORY_MUTECT2]] [--memory_gather_vcfs [MEMORY_GATHER_VCFS]] [--memory_genomicsdb_import [MEMORY_GENOMICSDB_IMPORT]] [--memory_create_pon [MEMORY_CREATE_PON]]
 
 Input:
-    * input_files: the path to a file containing in each row the sample name and the path to a BAM file to be included in the PON
-    	example:
-	sample1	/path/to/sample1.bam
-	sample2	/path/to/sample2.bam
-	NOTE: the sample name must be set in the @SN annotation
+    * input_files: the path to a tab-separated values file containing in each row the sample name and the path to a BAM file to be considered for computing the PON (indexes expected *.bai)
+        example:
+        sample1 /path/to/sample1.bam
+        sample2 /path/to/sample2.bam
+        NOTE: the sample name must be set in the @SM annotation of the BAM header
+    * reference: the path to the FASTA genome reference (indexes expected *.fai, *.dict)
+    * intervals: the path to a BED file containing the genomic regions to analyze
+    * gnomad: the path to the gnomad VCF or other germline resource
 
 Optional input:
-    * output: the folder where to publish output
+    * output: the folder where to publish output (default: output)
+    * max_mnp_distance: maximum MNP distance that will be passed to Mutect2 (default: 0, recommended for creating a PON)
+    * memory_mutect2: the ammount of memory used by Mutect2 (default: 16g)
+    * memory_gather_vcfs: the ammount of memory used by Picard's GatherVcfs (default: 32g)
+    * memory_genomicsdb_import: the ammount of memory used by GenomicsDBImport (default: 16g)
+    * memory_create_pon: the ammount of memory used by CreateSomaticPanelOfNormals (default: 32g)
 
 Output:
-    * Output combined VCF pon.vcf
+    * Output VCF files of single samples and TBI indexes
+    * Output combined VCF `pon.vcf` and index `pon.vcf.idx`
+    * Log files of all processes in `logs/` directory
 ```
 
 ## References
