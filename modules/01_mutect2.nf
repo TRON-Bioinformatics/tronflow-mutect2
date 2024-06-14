@@ -1,6 +1,6 @@
 params.memory_mutect2 = "16g"
 params.output = 'output'
-params.gnomad = false
+params.mutect2_gnomad = false
 params.pon = false
 params.disable_common_germline_filter = false
 params.reference = false
@@ -27,7 +27,7 @@ process MUTECT2 {
 
     script:
     normal_panel_option = params.pon ? "--panel-of-normals ${params.pon}" : ""
-    germline_filter = params.disable_common_germline_filter || ! params.gnomad ? "" : "--germline-resource ${params.gnomad}"
+    germline_filter = params.disable_common_germline_filter || ! params.mutect2_gnomad ? "" : "--germline-resource ${params.mutect2_gnomad}"
     normal_inputs = normal_bam.split(",").collect({v -> "--input $v"}).join(" ")
     tumor_inputs = tumor_bam.split(",").collect({v -> "--input $v"}).join(" ")
     normalRGSMs = normal_bam.split(",").collect({v -> "\$(samtools view -H $v | grep -oP '(?<=SM:)[^ |\\t]*' | head -1)"})
